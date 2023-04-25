@@ -1,70 +1,31 @@
-# Getting Started with Create React App
+Airport services management
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Projekt uruchamiany jest poprzez wysyłanie wiadomości poprzez endpointy zawarte w klasach z "Controller" w nazwie.
 
-## Available Scripts
+GeneralManager ma możliwość wysłania wiadomości i czasu przeznaczonego na obsługę samolotu do StandManagera.
 
-In the project directory, you can run:
+StandManager ma możliwość wysłania wiadomości, czasu przeznaczonego na obsługę samolotu do wybranego przez siebie, dostępnego serwisu. Ponadto wysłanie opcji "finished" rozpoczyna procedurę obsługi lotu.
 
-### `npm start`
+Poszczególne serwisy poprzez wysyłanie wiadomości finished, landed, finisheddeparture albo ready przekazują następnemu w kolejce serwisowi, że może zacząć pracę, w kolejności:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Pilot (landed) -> GeneralManager (send) -> StandManager (send) -> StandManager (finished) -> LuggageService (finished) -> BoardingService (finished) -> CleaningService (finished) -> CateringService (finished) -> TankingService (finished) -> BoardingService (finisheddeparture) -> LuggageService (finisheddeparture) -> Pilot (finished) -> PushbackService (finished) -> State (ready)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Wzorce strukturalne: Fasada, Most
 
-### `npm test`
+Wzorce behawioralne: Stan, Metoda Szablonowa, Iterator
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Wzorce kreacyjne: Builder, Singleton
 
-### `npm run build`
+Metoda szablonowa - utworzenie abstract flight state zawierającego metody poszczególnych stanów. Konkretne stany nadpisują metodę która dotyczy ich stanu np. PilotState nadpisuje metodę landed(). Jeżeli metoda zostanie użyta w innym stanie pojawia się błąd.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Most - połączenie między GUI a API
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Stan - utworzenie stanu dla każdego etapu działania poszczególnych serwisów, utworzenie kolejności zdarzeń - jeżeli aiport service posiada konkretny stan nie możemy w nim wywołać działań dla innch stanów
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Fasada - stworzenie rekordu zawierającego wszystkie serwisy dla danego lotu, które przechowywane są w airport service
 
-### `npm run eject`
+Builder - budowanie obiektu zawierającego informacje o rodzaju pracy do wykonania
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Singleton - bazy danych zdefiniowane jako @Component
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Iterator - użycie do przechodzenia po liście WorkOrders w celu znalezienia prac spełniających kryteria iteracji (po numerze lotu)
