@@ -1,0 +1,96 @@
+.general-form {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #77bce8;
+  text-align: left;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.general-form label {
+  margin-bottom: 0.5rem;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.general-form .input-disabled {
+  margin-bottom: 0.5rem;
+  height: 40px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 15px;
+  border-style: solid;
+  border-color: #babfc3;
+  border-width: 2px;
+}
+
+.general-form .input-enabled {
+  margin-bottom: 1rem;
+  height: 40px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 15px;
+  border-style: solid;
+  border-color: #babfc3;
+  border-width: 2px;
+}
+
+.general-form .button-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.assign-btn-disabled {
+  background-color: #767b7e;
+  border: 1px solid #767b7e;
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  font-family: "Akzidenz Grotesk BQ Medium", -apple-system, BlinkMacSystemFont,
+    sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  padding: 10px 20px;
+  text-align: center;
+  transform: translateY(0);
+  transition: transform 150ms, box-shadow 150ms;
+  touch-action: manipulation;
+  margin-top: 1rem;
+  width: 40%;
+}
+
+.assign-btn-enabled {
+  background-color: #77bce8;
+  border: 1px solid #77bce8;
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  font-family: "Akzidenz Grotesk BQ Medium", -apple-system, BlinkMacSystemFont,
+    sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  padding: 10px 20px;
+  text-align: center;
+  transform: translateY(0);
+  transition: transform 150ms, box-shadow 150ms;
+  touch-action: manipulation;
+  margin-top: 1rem;
+  width: 40%;
+}
