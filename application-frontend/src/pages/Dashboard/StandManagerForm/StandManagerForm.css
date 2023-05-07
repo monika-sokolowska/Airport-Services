@@ -1,0 +1,99 @@
+.service-forms-container {
+  border-color: rgb(230, 229, 229);
+  border-style: solid;
+  height: 60%;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #77bce8;
+  text-align: left;
+  overflow: hidden;
+  border-radius: 15px;
+}
+
+.service-form {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #77bce8;
+  text-align: left;
+  padding: 1rem;
+  overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: white;
+  color: white;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: white;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #77bce8;
+}
+
+.next-btn {
+  background-color: #77bce8;
+  border: 1px solid #77bce8;
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  font-family: "Akzidenz Grotesk BQ Medium", -apple-system, BlinkMacSystemFont,
+    sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  padding: 10px 20px;
+  text-align: center;
+  transform: translateY(0);
+  transition: transform 150ms, box-shadow 150ms;
+  touch-action: manipulation;
+  margin-top: 1rem;
+  width: 40%;
+  margin-left: 2rem;
+}
+
+.prev-btn {
+  background-color: #77bce8;
+  border: 1px solid #77bce8;
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  font-family: "Akzidenz Grotesk BQ Medium", -apple-system, BlinkMacSystemFont,
+    sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  padding: 10px 20px;
+  text-align: center;
+  transform: translateY(0);
+  transition: transform 150ms, box-shadow 150ms;
+  touch-action: manipulation;
+  margin-top: 1rem;
+  width: 40%;
+}
+
+.service-form .button-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+}

@@ -1,0 +1,204 @@
+main {
+  line-height: 1.75;
+  font-weight: 400;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo {
+  width: auto;
+  height: 5vh;
+}
+
+.form-container {
+  height: 80%;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-label {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-right: 2rem;
+}
+
+.form-label .header {
+  color: #ffffff;
+  font-weight: 400;
+  font-size: 26px;
+  padding-left: 2rem;
+  font-weight: 600;
+}
+
+.form-label .log-out {
+  color: #ffffff;
+  font-weight: 400;
+  font-size: 16px;
+  padding-left: 2rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 15px;
+}
+
+.left-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 50%;
+}
+
+.personal-info {
+  height: 40%;
+  width: 80%;
+  margin: 2rem;
+  overflow: hidden;
+  outline: #000000;
+  border-radius: 10px;
+  background-color: #ffffff;
+  margin-top: 0;
+  padding-top: 1rem;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
+}
+
+.left-column .header {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  color: #77bce8;
+  text-align: left;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 2rem;
+  margin-bottom: 0;
+  margin-left: 3rem;
+}
+
+.personal-info h1 {
+  line-height: 1;
+  color: #77bce8;
+  text-align: left;
+  font-size: 15px;
+  padding-left: 2rem;
+  font-weight: 500;
+}
+
+.personal-info h3 {
+  line-height: 1;
+  color: #000000;
+  text-align: left;
+  font-size: 15px;
+  padding-left: 3rem;
+  font-weight: 100;
+}
+
+.log-out {
+  color: white;
+}
+
+.log-out:hover {
+  color: #0d5684;
+  cursor: pointer;
+}
+
+.received-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 40%;
+  width: 80%;
+  margin-left: 2rem;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  align-items: flex-start;
+  padding: 1em;
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
+.received-info h1 {
+  line-height: 1;
+  color: #77bce8;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.departed-flights {
+  height: 35px;
+  width: 100%;
+  overflow: hidden;
+  background-color: #ffffff;
+
+  border-radius: 10px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-style: solid;
+  border-color: #babfc3;
+  border-width: 2px;
+}
+
+.received-info .departed-flights h1 {
+  line-height: 1;
+  color: #000000;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 100;
+}
+
+.right-panel {
+  height: 100%;
+  width: 50%;
+  padding: 2rem;
+  padding-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.right-panel .header {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  color: #77bce8;
+  text-align: left;
+  font-size: 18px;
+  font-weight: 500;
+  margin-left: 1.5rem;
+  margin-bottom: 0;
+}
+
+.right-panel .employee-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  overflow: hidden;
+}
