@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.*;
 
@@ -18,31 +20,36 @@ public class Employee {
     @GeneratedValue
     private UUID id;
 
-    @Column(name = "role_id")
-    private UUID roleId;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private Role role;
-
-    @Column(name = "employee_details_id")
-    private UUID employeeDetailsId;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_details_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private EmployeeDetails employeeDetails;
-
-    @Column(name = "email")
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "is_busy")
     private boolean isBusy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "fk_employees_roles"))
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    private Role role;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "employee_details_id", referencedColumnName = "id", insertable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "fk_employees_details"), unique = true)
+    private EmployeeDetails employeeDetails;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "department_id", referencedColumnName = "id",
+            foreignKey = @ForeignKey(name = "fk_employees_department"))
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     private Department department;
+
+    @ManyToMany
+    @JoinTable(name = "employees_services",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id"))
+    private Set<Service> services = new HashSet<>();
 
 }

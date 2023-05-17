@@ -20,10 +20,7 @@ public class Department {
     @GeneratedValue
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
-
-    @OneToMany
-    private List<Employee> employees = new LinkedList<>();
 
 }

@@ -19,7 +19,7 @@ public class Role {
     @GeneratedValue
     private UUID id;
 
-    @Column(name = "role")
+    @Column(name = "role", nullable = false, unique = true)
     private String role;
 
 }

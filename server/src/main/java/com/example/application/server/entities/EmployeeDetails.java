@@ -17,10 +17,10 @@ public class EmployeeDetails {
     @GeneratedValue
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "surname")
+    @Column(name = "surname", nullable = false)
     private String surname;
 
     public String getFullName() {
