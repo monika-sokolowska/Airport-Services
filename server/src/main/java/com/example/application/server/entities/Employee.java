@@ -41,11 +41,8 @@ public class Employee {
     @Column(name = "is_busy")
     private boolean isBusy;
 
-    @ManyToMany
-    @JoinTable(
-            name="employees_departments",
-            joinColumns = @JoinColumn(name = "employee_id"),
-            inverseJoinColumns = @JoinColumn(name = "department_id"))
-    private List<Department> departments = new LinkedList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Department department;
 
 }

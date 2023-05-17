@@ -8,7 +8,6 @@ public record EmployeeDTO(
         String name, // full name
         String email,
         String role,
-//        List<String> services) {
         String service) {
 
 }

@@ -33,32 +33,12 @@ public class EmployeeService2 {
     }
 
     public EmployeeDTO convertEmployeeToEmployeeDTO(Employee employee) {
-        String service;
-        try {
-            service = employee.getDepartments()
-                    .stream()
-                    .map(Department::getName)
-                    .toList().get(0);
-        } catch (IndexOutOfBoundsException e) {
-            service = "";
-        }
-
         return new EmployeeDTO(
                 employee.getId(),
                 employee.getEmployeeDetails().getFullName(),
                 employee.getEmail(),
                 employee.getRole().getRole(),
-                service);
-
-//        return new EmployeeDTO(
-//                employee.getId(),
-//                employee.getEmployeeDetails().getFullName(),
-//                employee.getEmail(),
-//                employee.getRole().getRole(),
-//                employee.getDepartments()
-//                        .stream()
-//                        .map(Department::getName)
-//                        .toList());
+                employee.getDepartment().getName());
     }
 
 }

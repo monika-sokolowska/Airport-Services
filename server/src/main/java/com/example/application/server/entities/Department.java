@@ -23,7 +23,7 @@ public class Department {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(mappedBy = "departments")
+    @OneToMany
     private List<Employee> employees = new LinkedList<>();
 
 }
