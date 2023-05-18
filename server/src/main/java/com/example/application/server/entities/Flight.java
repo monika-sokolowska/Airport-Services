@@ -45,6 +45,6 @@ public class Flight {
     private LocalDateTime departureTime;
 
     @Column(name = "time_to_service")
-    private int timeToService;
+    private Integer timeToService;
 
 }
