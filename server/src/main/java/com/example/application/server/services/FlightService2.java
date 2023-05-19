@@ -17,10 +17,18 @@ public class FlightService2 {
         return flightRepository.findByStatusStatus(status);
     }
 
+    public List<Flight> getFlightsByAirplaneNumber(String number) {
+        return flightRepository.findByAirplaneNumber(number);
+    }
+
     public FlightDTO convertFlightToDto(Flight flight) {
         return new FlightDTO(
                 flight.getId(),
                 flight.getAirplane().getNumber()
         );
+    }
+
+    public void saveFlight(Flight flight) {
+        flightRepository.save(flight);
     }
 }

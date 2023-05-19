@@ -18,7 +18,7 @@ public class Airplane {
     @GeneratedValue
     private UUID id;
 
-    @Column(name = "number", nullable = false)
+    @Column(name = "number", nullable = false, unique = true)
     private String number;
 
 }
