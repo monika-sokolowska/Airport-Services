@@ -20,7 +20,6 @@ public class FlightService2 {
     public FlightDTO convertFlightToDto(Flight flight) {
         return new FlightDTO(
                 flight.getId(),
-                flight.getAirplane().getId(),
                 flight.getAirplane().getNumber()
         );
     }

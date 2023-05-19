@@ -18,7 +18,7 @@ public class FlightController {
 
     private final FlightService2 flightService;
 
-    @GetMapping
+    @GetMapping("/flightsByStatus")
     public ResponseEntity<List<FlightDTO>> getFlightsByStatus(@RequestParam(defaultValue = "landed") String status) {
         List<Flight> flights = flightService.getFlightsByStatus(status);
         List<FlightDTO> flightDTOS = flights.stream().map(flightService::convertFlightToDto).toList();
