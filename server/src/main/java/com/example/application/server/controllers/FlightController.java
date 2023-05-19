@@ -65,7 +65,6 @@ public class FlightController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        // TODO check if works
         Status status;
         try {
             status = statusService.getStatusByStatus(LANDED);
