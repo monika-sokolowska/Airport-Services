@@ -3,6 +3,7 @@ package com.example.application.server.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -14,13 +15,16 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "services")
 public class Service {
+
     @Id
-    @GeneratedValue
+    @Column(name = "id", nullable = false, unique = true, updatable = false,
+            columnDefinition = "uuid DEFAULT gen_random_uuid()")
     private UUID id;
 
     @Column(name = "service_start")
@@ -34,18 +38,24 @@ public class Service {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "department_id", referencedColumnName = "id",
-            foreignKey = @ForeignKey(name = "fk_service_department"))
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
+            foreignKey = @ForeignKey(name = "fk_services_department",
+                    foreignKeyDefinition = "FOREIGN KEY (department_id) " +
+                            "REFERENCES departments(id)" +
+                            " ON DELETE CASCADE" +
+                            " ON UPDATE CASCADE"))
     private Department department;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "flight_id", referencedColumnName = "id",
-            foreignKey = @ForeignKey(name = "fk_service_flight"))
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
+            foreignKey = @ForeignKey(name = "fk_services_flight",
+                    foreignKeyDefinition = "FOREIGN KEY (flight_id) " +
+                            "REFERENCES flights(id)" +
+                            " ON DELETE SET NULL" +
+                            " ON UPDATE CASCADE"))
     private Flight flight;
+
 
     @ManyToMany(mappedBy = "services")
     private Set<Employee> employees = new HashSet<>();
-
 
 }

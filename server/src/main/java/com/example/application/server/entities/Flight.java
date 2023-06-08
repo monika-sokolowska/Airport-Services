@@ -16,27 +16,38 @@ import java.util.UUID;
 @Entity
 @Table(name = "flights")
 public class Flight {
+
     @Id
-    @GeneratedValue
+    @Column(name = "id", nullable = false, unique = true, updatable = false,
+            columnDefinition = "uuid DEFAULT gen_random_uuid()")
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "airplane_id", referencedColumnName = "id",
-            foreignKey = @ForeignKey(name = "fk_flight_airplane"))
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
+            foreignKey = @ForeignKey(name = "fk_flights_airplane",
+                    foreignKeyDefinition = "FOREIGN KEY (airplane_id) " +
+                            "REFERENCES airplanes(id)" +
+                            " ON DELETE SET NULL" +
+                            " ON UPDATE CASCADE"))
     private Airplane airplane;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "status_id", referencedColumnName = "id",
-            foreignKey = @ForeignKey(name = "fk_airplane_status"))
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
+            foreignKey = @ForeignKey(name = "fk_flights_status",
+                    foreignKeyDefinition = "FOREIGN KEY (status_id) " +
+                            "REFERENCES statuses(id)" +
+                            " ON DELETE RESTRICT" +
+                            " ON UPDATE CASCADE"))
     private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "stand_manager_id", referencedColumnName = "id",
-            foreignKey = @ForeignKey(name = "fk_flight_employee"))
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
-    private Employee employee;
+            foreignKey = @ForeignKey(name = "fk_flight_employee",
+                    foreignKeyDefinition = "FOREIGN KEY (stand_manager_id) " +
+                            "REFERENCES employees(id)" +
+                            " ON DELETE NO ACTION" +
+                            " ON UPDATE CASCADE"))
+    private Employee stand_manager;
 
     @Column(name = "arrival_time")
     private LocalDateTime arrivalTime;
