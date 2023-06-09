@@ -13,4 +13,6 @@ public interface FlightRepository extends JpaRepository<Flight, UUID> {
     List<Flight> findByStatusStatus(String status);
     List<Flight> findByAirplaneNumber(String number);
 
+
+    List<Flight> findByStand_managerAndStatus(UUID standManager, String status);
 }

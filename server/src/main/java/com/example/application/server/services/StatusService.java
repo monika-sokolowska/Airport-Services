@@ -14,7 +14,7 @@ public class StatusService {
 
     private final StatusRepository statusRepository;
 
-    public Status getStatusByStatus(String statusName) throws StatusNotFound {
+    public Status getStatusByStatusName(String statusName) throws StatusNotFound {
         Optional<Status> optionalStatus= statusRepository.findByStatus(statusName);
         if(optionalStatus.isEmpty())
             throw new StatusNotFound("Status not found");
