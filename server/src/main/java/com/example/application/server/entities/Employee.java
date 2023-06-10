@@ -29,8 +29,8 @@ public class Employee {
     @Column(name = "is_busy")
     private boolean isBusy;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false,
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id", referencedColumnName = "id", updatable = false,
             foreignKey = @ForeignKey(name = "fk_employees_roles",
                     foreignKeyDefinition = "FOREIGN KEY (role_id) " +
                             "REFERENCES roles(id)" +
@@ -38,11 +38,10 @@ public class Employee {
                             " ON UPDATE CASCADE"))
     private Role role;
 
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_details_id",
             referencedColumnName = "id",
-            insertable = false,
-            updatable = false,
             unique = true,
             foreignKey = @ForeignKey(name = "fk_employees_details",
                     foreignKeyDefinition = "FOREIGN KEY (employee_details_id) " +
@@ -58,13 +57,9 @@ public class Employee {
                             "REFERENCES departments(id)" +
                             " ON DELETE RESTRICT" +
                             " ON UPDATE CASCADE"))
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
     private Department department;
 
     @ManyToMany
-//    @JoinTable(name = "employees_services",
-//            joinColumns = @JoinColumn(name = "employee_id"),
-//            inverseJoinColumns = @JoinColumn(name = "service_id"))
     @JoinTable(name = "employees_services",
             joinColumns = @JoinColumn(name = "employee_id",
                     foreignKey = @ForeignKey(name = "fk_employees_services_employee",
@@ -79,7 +74,20 @@ public class Employee {
                                     " ON UPDATE CASCADE" +
                                     " ON DELETE RESTRICT"))
     )
-
     private Set<Service> services = new HashSet<>();
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return Objects.equals(id, employee.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
 }
