@@ -2,14 +2,32 @@ import "../Dashboard.css";
 import "./GeneralManagerForm.css";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { clearStore } from "../../../reducers/userSlice";
+import { getFlights } from "../../../reducers/flightsSlice";
+
+const initialState = {
+  message: "",
+};
 
 const GeneralManagerForm = () => {
   const { user } = useSelector((store) => store.user);
+  const flights = useSelector((store) => store.fligths);
   const [disabledButton, setDisabledButton] = useState(true);
   const dispatch = useDispatch();
+
+  const [values, setValues] = useState(initialState);
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+
+    setValues({ ...values, [name]: value });
+  };
+
+  useEffect(() => {
+    dispatch(getFlights());
+  }, []);
 
   return (
     <div className="form-container">
@@ -26,16 +44,27 @@ const GeneralManagerForm = () => {
         <div className="left-column">
           <div className="header">Information</div>
           <div className="personal-info">
-            <h1>Name</h1>
+            <h1>User</h1>
             <h3>{user.name}</h3>
             <h1>Login</h1>
             <h3>{user.email}</h3>
           </div>
           <div className="header">Messages</div>
-          <div className="received-info">
+          <div className="received-info-general">
             <h1>Departed flights</h1>
-            <div className="departed-flights">
-              <h1>FLIGHT 9558347</h1>
+            <div className="received-general"></div>
+
+            <h1>Landed flights</h1>
+            <div className="received-general">
+              {flights &&
+                flights.map((item) => {
+                  const { flightId, airplaneNumber } = item;
+                  return (
+                    <div key={flightId} className="departed-flights">
+                      <h1>{airplaneNumber}</h1>
+                    </div>
+                  );
+                })}
             </div>
           </div>
         </div>
@@ -61,7 +90,13 @@ const GeneralManagerForm = () => {
               </select>
 
               <label>Message</label>
-              <input value="" className="input-enabled" />
+              <textarea
+                value={values.message}
+                className="input-message"
+                onChange={handleChange}
+                name="message"
+                cols="10"
+              />
 
               <label>Time</label>
               <input value="" className="input-enabled" />

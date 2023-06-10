@@ -64,16 +64,18 @@ main {
 }
 
 .personal-info {
-  height: 40%;
+  height: 20%;
   width: 80%;
   margin: 2rem;
-  overflow: hidden;
+  overflow-y: hidden;
   outline: #000000;
   border-radius: 10px;
   background-color: #ffffff;
   margin-top: 0;
+  margin-bottom: 0;
   padding-top: 1rem;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
+  overflow-y: scroll;
 }
 
 .left-column .header {
@@ -118,18 +120,21 @@ main {
 }
 
 .received-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  height: 40%;
+  height: 65%;
   width: 80%;
   margin-left: 2rem;
   margin-bottom: 2rem;
-  overflow: hidden;
+  overflow-y: hidden;
   background-color: #ffffff;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
   align-items: flex-start;
+}
+
+.received {
+  height: 100%;
+  width: 100%;
+  overflow-y: scroll;
   padding: 1em;
   padding-left: 2em;
   padding-right: 2em;
@@ -146,7 +151,7 @@ main {
 .departed-flights {
   height: 35px;
   width: 100%;
-  overflow: hidden;
+  overflow-y: hidden;
   background-color: #ffffff;
 
   border-radius: 10px;
@@ -158,6 +163,7 @@ main {
   border-style: solid;
   border-color: #babfc3;
   border-width: 2px;
+  margin-bottom: 1rem;
 }
 
 .received-info .departed-flights h1 {
@@ -200,5 +206,41 @@ main {
   background-color: #ffffff;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
-  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.received-info-general {
+  height: 65%;
+  width: 80%;
+  margin-left: 2rem;
+  margin-bottom: 2rem;
+  overflow-y: hidden;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+}
+
+.received-general {
+  height: 100%;
+  width: 80%;
+  overflow-y: scroll;
+  padding: 1em;
+  padding-left: 2em;
+  padding-right: 2em;
+
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
+  margin: 1rem;
+  border-radius: 15px;
+}
+
+.received-info-general h1 {
+  line-height: 1;
+  color: #77bce8;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 500;
+  margin: 1rem;
 }
