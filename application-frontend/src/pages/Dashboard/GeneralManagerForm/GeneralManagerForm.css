@@ -1,14 +1,9 @@
 .general-form {
   height: 100%;
   width: 100%;
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  justify-content: space-between;
   color: #77bce8;
   text-align: left;
   padding: 2rem;
-  overflow: hidden;
 }
 
 .general-form label {
@@ -45,11 +40,27 @@
   border-width: 2px;
 }
 
+.general-form .input-message {
+  margin-bottom: 1rem;
+  height: 60px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 0.5rem;
+  text-align: left;
+  font-size: 15px;
+  border-style: solid;
+  border-color: #babfc3;
+  border-width: 2px;
+  resize: vertical;
+  min-height: 36px;
+}
+
 .general-form .button-container {
   width: 100%;
   display: flex;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
 }
 
@@ -72,6 +83,7 @@
   touch-action: manipulation;
   margin-top: 1rem;
   width: 40%;
+  margin: 1rem;
 }
 
 .assign-btn-enabled {
@@ -93,4 +105,5 @@
   touch-action: manipulation;
   margin-top: 1rem;
   width: 40%;
+  margin: 1rem;
 }
