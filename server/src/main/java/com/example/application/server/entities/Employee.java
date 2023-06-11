@@ -2,8 +2,8 @@ package com.example.application.server.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
@@ -13,7 +13,7 @@ import java.util.*;
 @Builder
 @Entity
 @Table(name = "employees")
-public class Employee {
+public class Employee implements UserDetails {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false,
@@ -90,4 +90,34 @@ public class Employee {
         return Objects.hash(id);
     }
 
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getAuthorities();
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

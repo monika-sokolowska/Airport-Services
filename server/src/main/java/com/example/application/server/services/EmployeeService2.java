@@ -1,11 +1,13 @@
 package com.example.application.server.services;
 
 import com.example.application.server.DTOs.EmployeeDTO;
-import com.example.application.server.entities.Department;
 import com.example.application.server.entities.Employee;
 import com.example.application.server.exceptions.EmployeeNotFoundException;
 import com.example.application.server.repositories.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
@@ -13,13 +15,9 @@ import java.util.UUID;
 
 
 @Service
-public class EmployeeService2 {
+@AllArgsConstructor
+public class EmployeeService2 implements UserDetailsService {
     private final EmployeeRepository employeeRepository;
-
-    @Autowired
-    public EmployeeService2(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
 
 
     public Employee getEmployeeById(UUID id) throws EmployeeNotFoundException {
@@ -32,6 +30,11 @@ public class EmployeeService2 {
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee with given email not found."));
     }
 
+    public boolean isEmailTaken(String email) {
+        Employee employee = employeeRepository.findByEmail(email).orElse(null);
+        return employee != null;
+    }
+
     public EmployeeDTO convertEmployeeToEmployeeDTO(Employee employee) {
         return new EmployeeDTO(
                 employee.getId(),
@@ -41,4 +44,13 @@ public class EmployeeService2 {
                 employee.getDepartment().getName());
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("[EmpService2/loadUserByUsername] User with given email not found"));
+    }
+
+    public Employee save(Employee employee) {
+        return employeeRepository.save(employee);
+    }
 }
