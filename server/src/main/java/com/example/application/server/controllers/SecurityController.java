@@ -84,8 +84,7 @@ public class SecurityController {
         Department department;
 
         try {
-            role = roleService.getRoleByRole(registerDTO.roleName())
-                    .orElseThrow(() -> new RoleNotFoundException("Role with given name not fount: " + registerDTO.roleName()));
+            role = roleService.getRoleByName(registerDTO.roleName());
 
             department = departmentService.getDepartmentByName(registerDTO.departmentName())
                     .orElseThrow(() -> new DepartmentNotFoundException("Department with given name not fount: " + registerDTO.departmentName()));

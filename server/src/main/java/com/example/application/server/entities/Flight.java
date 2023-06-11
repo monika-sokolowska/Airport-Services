@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -63,7 +61,7 @@ public class Flight {
                             "REFERENCES employees(id)" +
                             " ON DELETE NO ACTION" +
                             " ON UPDATE CASCADE"))
-    private Employee stand_manager;
+    private Employee standManager;
 
     @Column(name = "arrival_time")
     private LocalDateTime arrivalTime;

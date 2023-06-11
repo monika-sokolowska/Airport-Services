@@ -6,9 +6,7 @@ import com.example.application.server.entities.Flight;
 import com.example.application.server.entities.Status;
 import com.example.application.server.exceptions.AirplaneNotFound;
 import com.example.application.server.exceptions.StatusNotFound;
-import com.example.application.server.services.AirplaneService;
-import com.example.application.server.services.FlightService2;
-import com.example.application.server.services.StatusService;
+import com.example.application.server.services.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 @RequestMapping("/flight")
 @AllArgsConstructor
@@ -67,7 +64,7 @@ public class FlightController {
 
         Status status;
         try {
-            status = statusService.getStatusByStatus(LANDED);
+            status = statusService.getStatusByStatusName(LANDED);
         } catch (StatusNotFound e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

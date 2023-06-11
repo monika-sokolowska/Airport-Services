@@ -15,7 +15,7 @@ const initialState = {
 export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (user, thunkAPI) => {
-    return loginUserThunk("/login", user, thunkAPI);
+    return loginUserThunk("/auth/login", user, thunkAPI);
   }
 );
 

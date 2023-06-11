@@ -1,4 +1,2 @@
-1eee82ae-6b03-4eec-a0e1-77bc779f6bf9,admin,false,pass,68689fe8-3fd8-4d57-b0a2-b3b83acafbb6,4304819f-884d-42e9-b585-c4698db97c07,8dac345b-7069-4ed9-be0b-24d217cb1c30
-2b4e00cd-60e0-4855-ae55-a4c16b5396bc,stand,false,pass,5b90efb0-859d-4107-9451-b4b570d81fd2,cb1ba609-e857-4b01-afe9-02f3807fc95b,430d1111-4b90-4541-a600-74a08a64cc79
-05b048df-8674-4070-9ba7-4f232a573153,navigator,false,pass,0ffb7f3a-4dc7-4022-81e1-fd4e8c085ffe,cb940431-5180-451f-85ae-ff65c7e05ec0,f7a66dc7-8e85-4756-a27f-298408cf8660
-92934738-b2de-4d7b-9aea-ab2d7b4929a2,general,false,pass,dbc673cf-0a55-4bd6-97a3-fb14b8fcd99d,f846c845-3183-469f-a601-98d3e2cc51b4,3fa84b75-eeb3-45d2-b7d9-b410310997fb
+5001c3a6-25a8-41b1-bbea-7abf27953286,false,john.doe@example.com,$2a$10$mH2K9SaFLHT6VMcrAhCAbe4tRFkqsgrBc6sOFqAqjzK7f/49QjPYW,0ffb7f3a-4dc7-4022-81e1-fd4e8c085ffe,a427d1df-624e-4b55-81d5-ed2e767dbbb0,f7a66dc7-8e85-4756-a27f-298408cf8660
+63d22b15-28cb-44ac-816b-ba3eeb9df83b,false,john2.doe@example.com,$2a$10$DBBFPRx76MXxuIEZB/J59Oo7sb7Au0zftAkp.evjLowCzTAVIhP9S,0ffb7f3a-4dc7-4022-81e1-fd4e8c085ffe,8907fa4e-342c-4d9c-8d54-3d6c86a30236,430d1111-4b90-4541-a600-74a08a64cc79

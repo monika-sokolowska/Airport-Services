@@ -5,15 +5,18 @@ import com.example.application.server.repositories.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.RoleNotFoundException;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class RoleService {
 
-    private final RoleRepository roleRepository;
+    private RoleRepository roleRepository;
 
-    public Optional<Role> getRoleByRole(String name) {
-        return roleRepository.findByRole(name);
+    public Role getRoleByName(String name) throws RoleNotFoundException{
+        Optional<Role> byRole = roleRepository.findByRole(name);
+        return byRole.orElseThrow(RoleNotFoundException::new);
     }
 }
+

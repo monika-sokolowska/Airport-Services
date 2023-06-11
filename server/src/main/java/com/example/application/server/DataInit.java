@@ -119,8 +119,8 @@ public class DataInit {
                     try {
                         return Employee.builder()
                                 .id(UUID.fromString(stringArr[iterator++]))
-                                .email(stringArr[iterator++])
                                 .isBusy(Boolean.parseBoolean(stringArr[iterator++]))
+                                .email(stringArr[iterator++])
                                 .password(stringArr[iterator++])
                                 .department(departmentRepository.findById(UUID.fromString(stringArr[iterator++]))
                                         .orElseThrow(() -> new Exception("User department not found")))
@@ -153,7 +153,7 @@ public class DataInit {
                                 .timeToService(Integer.valueOf(stringArr[iterator++]))
                                 .airplane(airplaneRepository.findById(UUID.fromString(stringArr[iterator++]))
                                         .orElseThrow(() -> new Exception("Airplane with given id for this flight doesn't exist")))
-                                .stand_manager(employeeRepository.findById(UUID.fromString(stringArr[iterator++]))
+                                .standManager(employeeRepository.findById(UUID.fromString(stringArr[iterator++]))
                                         .orElseThrow(() -> new Exception("Manager with given id for this flight doesn't exist")))
                                 .status(statusRepository.findById(UUID.fromString(stringArr[iterator++]))
                                         .orElseThrow(() -> new Exception("Status with given id for this flight doesn't exist")))
