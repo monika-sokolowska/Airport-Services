@@ -1,45 +1,38 @@
 import "../Dashboard.css";
+import "./LuggageArrival.css";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { clearStore } from "../../../reducers/userSlice";
-import "./StandManagerForm.css";
-import LuggageArrivalForm from "./LuggageArrivalForm/LuggageArrivalForm";
-import BoardingArrivalForm from "./BoardingArrivalForm/BoardingArrivalForm";
-import CleaningForm from "./CleaningForm/CleaningForm";
-import TankingForm from "./TankingForm/TankingForm";
-import CateringForm from "./CateringForm/CateringForm";
 
-const StandManagerForm = () => {
+const initialState = {
+  message: "",
+};
+
+const LuggageArrival = () => {
   const { user } = useSelector((store) => store.user);
-  const { service } = useSelector((store) => store.service);
-  const dispatch = useDispatch();
   const [disabledButton, setDisabledButton] = useState(true);
+  const dispatch = useDispatch();
 
-  const displayFormDependingOnService = () => {
-    switch (service) {
-      case "LUGGAGE_ARRIVAL":
-        return <LuggageArrivalForm />;
-      case "BOARDING_ARRIVAL":
-        return <BoardingArrivalForm />;
-      case "CLEANING":
-        return <CleaningForm />;
-      case "TANKING":
-        return <TankingForm />;
-      case "CATERING":
-        return <CateringForm />;
-    }
+  const [values, setValues] = useState(initialState);
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+
+    setValues({ ...values, [name]: value });
   };
 
   return (
     <div className="form-container">
       <div className="form-label">
-        <div className="header">Stand Manager</div>
-        <div
+        <div className="header">Luggage Arrival</div>
+        <Link
+          to="/login"
           className="log-out"
           onClick={() => dispatch(clearStore("Logging out..."))}>
           Log out
-        </div>
+        </Link>
       </div>
       <div className="form">
         <div className="left-column">
@@ -50,7 +43,6 @@ const StandManagerForm = () => {
             <h1>Login</h1>
             <h3>{user.email}</h3>
           </div>
-
           <div className="header">Messages</div>
           <div className="received-info">
             <div className="received">
@@ -58,12 +50,12 @@ const StandManagerForm = () => {
               <textarea
                 className="flight-message"
                 style={{ minHeight: "35px", width: "100%", height: "150px" }}
-                value="FLIGHT 9558347. Message to stand manager: Some message to stand manager"
+                value="FLIGHT 9558347"
                 cols="10"
                 readOnly></textarea>
               <h1>Time</h1>
               <div className="departed-flights">
-                <h1>01:00:00</h1>
+                <h1>00:30:00</h1>
               </div>
             </div>
           </div>
@@ -78,24 +70,19 @@ const StandManagerForm = () => {
                 value="WAITING"
                 className="input-disabled"
               />
-              <div className="service-forms-container">
-                {displayFormDependingOnService()}
-              </div>
+
+              <label>Start service status</label>
+              <input
+                disabled={true}
+                value="WAITING"
+                className="input-disabled"
+              />
+
               <div className="button-container">
                 <input
                   disabled={disabledButton}
                   type="submit"
-                  value="Assign"
-                  className={
-                    disabledButton
-                      ? "assign-btn-disabled"
-                      : "assign-btn-enabled"
-                  }
-                />
-                <input
-                  disabled={disabledButton}
-                  type="submit"
-                  value="Start"
+                  value="Finish"
                   className={
                     disabledButton
                       ? "assign-btn-disabled"
@@ -110,4 +97,4 @@ const StandManagerForm = () => {
     </div>
   );
 };
-export default StandManagerForm;
+export default LuggageArrival;
