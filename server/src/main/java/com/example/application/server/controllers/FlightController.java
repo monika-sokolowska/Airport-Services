@@ -2,11 +2,9 @@ package com.example.application.server.controllers;
 
 import com.example.application.server.DTOs.FlightDTO;
 import com.example.application.server.entities.Airplane;
-import com.example.application.server.entities.Employee;
 import com.example.application.server.entities.Flight;
 import com.example.application.server.entities.Status;
 import com.example.application.server.exceptions.AirplaneNotFound;
-import com.example.application.server.exceptions.EmployeeNotFoundException;
 import com.example.application.server.exceptions.StatusNotFound;
 import com.example.application.server.services.*;
 import lombok.AllArgsConstructor;
@@ -14,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.relation.RoleNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -31,8 +28,6 @@ public class FlightController {
     private final FlightService2 flightService;
     private final AirplaneService airplaneService;
     private final StatusService statusService;
-    private final EmployeeService2 employeeService;
-    private final RoleService roleService;
 
     @GetMapping("/flightsByStatus")
     public ResponseEntity<List<FlightDTO>> getFlightsByStatus(@RequestParam(defaultValue = "landed") String status) {
@@ -73,19 +68,12 @@ public class FlightController {
         } catch (StatusNotFound e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        Employee standManger;
-
-        try {
-            standManger = employeeService.getAvailableStateManger(roleService.getRoleByName(Roles.STAND_MANAGER.getName()));
-        } catch (EmployeeNotFoundException | RoleNotFoundException ex){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
 
         Flight flight = new Flight(
                 UUID.randomUUID(),
                 airplane,
                 status,
-                standManger,
+                null,
                 LocalDateTime.now(),
                 null,
                 null

@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static java.util.stream.Collectors.toList;
+
 
 @Service
 public class EmployeeService2 {
@@ -51,14 +53,25 @@ public class EmployeeService2 {
         return byRoleAndBusy.orElseThrow();
     }
 
-    public Employee getAvailableStateManger(Role role) throws EmployeeNotFoundException {
+
+    public Employee getAvailableEmployeeByDeparture(Role role) throws EmployeeNotFoundException {
+        Optional<Employee> byRoleAndBusy = employeeRepository.findByRoleAndBusy(role, false);
+        return byRoleAndBusy.orElseThrow();
+    }
+
+    public List<Employee> getAvailableStandMangers(Role role, int numberOfFlights) throws EmployeeNotFoundException {
         Optional<List<Employee>> byRoleAndBusy = employeeRepository.findAllByRole(role);
         if(byRoleAndBusy.isEmpty()){
             throw new EmployeeNotFoundException("State manager not found");
         }
+
         return byRoleAndBusy.stream()
                 .flatMap(Collection::stream)
-                .filter(employee -> flightRepository.findByStand_managerAndStatus(employee.getId(), "departure").size() < 10)
-                .findFirst().orElseThrow(() -> new EmployeeNotFoundException("State managers are fully occupied"));
+                .filter(employee -> flightRepository.findByStand_managerAndStatus(employee.getId(), "departure").size() < numberOfFlights)
+                .collect(toList());
+    }
+
+    public void assignLuggageArrivalService(UUID flightId) {
+
     }
 }
