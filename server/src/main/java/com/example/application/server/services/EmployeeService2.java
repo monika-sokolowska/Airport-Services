@@ -74,4 +74,13 @@ public class EmployeeService2 {
     public void assignLuggageArrivalService(UUID flightId) {
 
     }
+
+    public List<Employee> getAvailableEmployee(boolean isBusy) {
+        return employeeRepository.findAllByBusy(isBusy);
+    }
+
+    public void updateBusy(Employee employee, boolean isBusy) {
+        employee.setBusy(isBusy);
+        employeeRepository.save(employee);
+    }
 }

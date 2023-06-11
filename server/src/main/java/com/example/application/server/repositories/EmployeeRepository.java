@@ -16,4 +16,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
     Optional<Employee> findByRoleAndBusy(Role role, boolean busy);
 
     Optional<List<Employee>> findAllByRole(Role role);
+
+    List<Employee> findAllByBusy(boolean isBusy);
 }

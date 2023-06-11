@@ -60,4 +60,8 @@ public class FlightService2 {
         flightRepository.save(updatedFlight);
 
     }
+
+    public List<Flight> getFlightsByStandManager(Employee standManger) {
+        return flightRepository.findByStand_manager(standManger);
+    }
 }
