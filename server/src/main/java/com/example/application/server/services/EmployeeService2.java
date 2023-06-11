@@ -3,7 +3,9 @@ package com.example.application.server.services;
 import com.example.application.server.DTOs.EmployeeDTO;
 import com.example.application.server.entities.Employee;
 import com.example.application.server.entities.Role;
+import com.example.application.server.entities.Status;
 import com.example.application.server.exceptions.EmployeeNotFoundException;
+import com.example.application.server.exceptions.StatusNotFound;
 import com.example.application.server.repositories.EmployeeRepository;
 import com.example.application.server.repositories.FlightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ import static java.util.stream.Collectors.toList;
 public class EmployeeService2 {
     private final EmployeeRepository employeeRepository;
     private final FlightRepository flightRepository;
+
+    private StatusService statusService;
 
     @Autowired
     public EmployeeService2(EmployeeRepository employeeRepository, FlightRepository flightRepository) {
@@ -48,26 +52,21 @@ public class EmployeeService2 {
                 employee.getDepartment().getName());
     }
 
-    public Employee getAvailableEmployeeByRole(Role role) throws EmployeeNotFoundException {
-        Optional<Employee> byRoleAndBusy = employeeRepository.findByRoleAndBusy(role, false);
-        return byRoleAndBusy.orElseThrow();
-    }
-
-
-    public Employee getAvailableEmployeeByDeparture(Role role) throws EmployeeNotFoundException {
-        Optional<Employee> byRoleAndBusy = employeeRepository.findByRoleAndBusy(role, false);
-        return byRoleAndBusy.orElseThrow();
-    }
-
     public List<Employee> getAvailableStandMangers(Role role, int numberOfFlights) throws EmployeeNotFoundException {
         Optional<List<Employee>> byRoleAndBusy = employeeRepository.findAllByRole(role);
         if(byRoleAndBusy.isEmpty()){
             throw new EmployeeNotFoundException("State manager not found");
         }
+        Status departure;
+        try {
+            departure = statusService.getStatusByStatusName("departure");
+        } catch (StatusNotFound e) {
+            return List.of();
+        }
 
         return byRoleAndBusy.stream()
                 .flatMap(Collection::stream)
-                .filter(employee -> flightRepository.findByStand_managerAndStatus(employee.getId(), "departure").size() < numberOfFlights)
+                .filter(employee -> flightRepository.findByStandManagerAndStatus(employee, departure).size() < numberOfFlights)
                 .collect(toList());
     }
 
@@ -76,7 +75,7 @@ public class EmployeeService2 {
     }
 
     public List<Employee> getAvailableEmployee(boolean isBusy) {
-        return employeeRepository.findAllByBusy(isBusy);
+        return employeeRepository.findAllByisBusy(isBusy);
     }
 
     public void updateBusy(Employee employee, boolean isBusy) {

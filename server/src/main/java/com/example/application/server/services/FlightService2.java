@@ -3,6 +3,7 @@ package com.example.application.server.services;
 import com.example.application.server.DTOs.FlightDTO;
 import com.example.application.server.entities.Employee;
 import com.example.application.server.entities.Flight;
+import com.example.application.server.entities.Status;
 import com.example.application.server.exceptions.FlightNotFoundException;
 import com.example.application.server.repositories.FlightRepository;
 import lombok.AllArgsConstructor;
@@ -38,9 +39,15 @@ public class FlightService2 {
         flightRepository.save(flight);
     }
 
-    public Optional<Flight> updateStatus(UUID flightId, String status) throws NoSuchElementException {
-        flightRepository.saveOrUpdate(flightId, status);
-        return flightRepository.findById(flightId);
+    public Optional<Flight> updateStatus(UUID flightId, Status status) throws NoSuchElementException {
+        Optional<Flight> byId = flightRepository.findById(flightId);
+        if(byId.isEmpty()){
+            throw new NoSuchElementException("flight not found");
+        }
+        Flight flight = byId.get();
+        flight.setStatus(status);
+        flightRepository.save(flight);
+        return byId;
     }
 
     public Optional<Flight> getFlightById(UUID flightId) {
@@ -53,7 +60,7 @@ public class FlightService2 {
             throw new FlightNotFoundException(String.format("Flight with id %s not found", flightId));
         }
         Flight updatedFlight = flightById.get();
-        updatedFlight.setStand_manager(standManager);
+        updatedFlight.setStandManager(standManager);
         updatedFlight.setTimeToService(timeToService);
         //TODO po co ta message ?
         // Czy zmieniamy tu status lotu na standmanager
@@ -62,6 +69,6 @@ public class FlightService2 {
     }
 
     public List<Flight> getFlightsByStandManager(Employee standManger) {
-        return flightRepository.findByStand_manager(standManger);
+        return flightRepository.findByStandManager(standManger);
     }
 }

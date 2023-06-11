@@ -23,7 +23,7 @@ import java.util.UUID;
 @RequestMapping("/generalManager")
 @RestController
 @AllArgsConstructor
-public class GeneralManagerController {
+public class GeneralManagerControllers {
 
     private EmployeeService2 employeeService;
     private RoleService roleService;
