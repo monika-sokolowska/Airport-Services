@@ -21,8 +21,14 @@ public class EmployeeController {
 
     @GetMapping("/get")
     public ResponseEntity<EmployeeDTO> getUser() {
-        Employee employee = GetCurrentUser();
-        return ResponseEntity.ok(employeeService.convertEmployeeToEmployeeDTO(employee));
+        try {
+            Employee employee = GetCurrentUser();
+            return ResponseEntity.ok(employeeService.convertEmployeeToEmployeeDTO(employee));
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+            return  ResponseEntity.badRequest().build();
+        }
+
     }
 
 }
