@@ -39,7 +39,7 @@ public class Employee implements UserDetails {
     private Role role;
 
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_details_id",
             referencedColumnName = "id",
             unique = true,
@@ -50,7 +50,7 @@ public class Employee implements UserDetails {
                             " ON UPDATE CASCADE"))
     private EmployeeDetails employeeDetails;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "department_id", referencedColumnName = "id",
             foreignKey = @ForeignKey(name = "fk_employees_department",
                     foreignKeyDefinition = "FOREIGN KEY (department_id) " +
@@ -75,20 +75,6 @@ public class Employee implements UserDetails {
                                     " ON DELETE RESTRICT"))
     )
     private Set<Service> services = new HashSet<>();
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Employee employee = (Employee) o;
-        return Objects.equals(id, employee.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 
 
     @Override
@@ -119,5 +105,32 @@ public class Employee implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return Objects.equals(id, employee.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", isBusy=" + isBusy +
+                ", role=" + role +
+                ", employeeDetails=" + employeeDetails +
+                ", department=" + department +
+                ", services=" + services +
+                '}';
     }
 }
