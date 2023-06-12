@@ -28,7 +28,7 @@ const SharedLayout = () => {
   return (
     <main>
       <Header />
-      <GeneralManagerForm />
+      {displayFormDependingOnService()}
     </main>
   );
 };
