@@ -6,16 +6,26 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { clearStore } from "../../../reducers/userSlice";
 import { getFlights } from "../../../reducers/flightsSlice";
+import { getAvailableStandManagers } from "../../../reducers/generalManagerSlice";
 
 const initialState = {
+  standManager: "",
   message: "",
+  time: "",
+};
+
+const initialFlight = {
+  flightId: "",
+  airplaneNumber: "",
 };
 
 const GeneralManagerForm = () => {
   const { user } = useSelector((store) => store.user);
-  const flights = useSelector((store) => store.fligths);
+  const { flights } = useSelector((store) => store.fligths);
+  const { standManagers } = useSelector((store) => store.generalManager);
   const [disabledButton, setDisabledButton] = useState(true);
   const dispatch = useDispatch();
+  const [flight, setFlight] = useState(initialFlight);
 
   const [values, setValues] = useState(initialState);
   const handleChange = (e) => {
@@ -27,7 +37,21 @@ const GeneralManagerForm = () => {
 
   useEffect(() => {
     dispatch(getFlights());
-  }, []);
+
+    const interval = setInterval(() => {
+      dispatch(getFlights());
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [dispatch]);
+
+  const setFlightDetails = (id) => {
+    dispatch(getAvailableStandManagers());
+    const selectedFlight = flights.find((flight) => flight.flightId === id);
+    setFlight(selectedFlight || initialFlight);
+  };
 
   return (
     <div className="form-container">
@@ -60,7 +84,10 @@ const GeneralManagerForm = () => {
                 flights.map((item) => {
                   const { flightId, airplaneNumber } = item;
                   return (
-                    <div key={flightId} className="departed-flights">
+                    <div
+                      key={flightId}
+                      className="departed-flights"
+                      onClick={setFlightDetails(flightId)}>
                       <h1>{airplaneNumber}</h1>
                     </div>
                   );
@@ -75,7 +102,11 @@ const GeneralManagerForm = () => {
               <label>Flight status</label>
               <input
                 disabled={true}
-                value="WAITING"
+                value={
+                  flight.airplaneNumber
+                    ? `LANDED ${flight.airplaneNumber}`
+                    : "WAITING"
+                }
                 className="input-disabled"
               />
 
