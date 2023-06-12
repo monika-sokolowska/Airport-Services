@@ -26,7 +26,7 @@ export const loginUser = createAsyncThunk(
 );
 
 export const getUser = createAsyncThunk("user/getUser", async (thunkAPI) => {
-  return getUserThunk("/auth/user", thunkAPI);
+  return getUserThunk("/employee/get", thunkAPI);
 });
 
 export const clearStore = createAsyncThunk("user/clearStore", clearStoreThunk);
