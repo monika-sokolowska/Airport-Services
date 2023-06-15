@@ -10,6 +10,10 @@ import com.example.application.server.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +28,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
+@Tag(name = "Security", description = "login, logout, register")
 @CrossOrigin
 @RestController
 @RequestMapping("/auth")
@@ -41,6 +46,18 @@ public class SecurityController {
     private final DepartmentService departmentService;
 
 
+    @Operation(
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Email or password is incorrect",
+                            responseCode = "400"
+                    )
+            }
+    )
     @PostMapping("/login")
     public ResponseEntity<AuthenticationDTO> login(@RequestBody LoginDTO loginDTO) {
 
