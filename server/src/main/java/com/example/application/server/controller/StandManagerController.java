@@ -5,10 +5,12 @@ import com.example.application.server.model.MessageToStandManagerService;
 import com.example.application.server.service.AirportService;
 import com.example.application.server.service.Services;
 import com.example.application.server.service.StandManagerService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
 @RequestMapping("standmanager")
+@Hidden
 public class StandManagerController extends MessageController<MessageToStandManagerService, StandManagerService> {
 
     protected StandManagerController(AirportService airportService) {

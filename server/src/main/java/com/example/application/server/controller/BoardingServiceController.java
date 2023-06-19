@@ -4,6 +4,7 @@ import com.example.application.server.model.MessageToService;
 import com.example.application.server.service.AirportService;
 import com.example.application.server.service.BoardingService;
 import com.example.application.server.service.Services;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
 @RequestMapping("boarding")
+@Hidden
 public class BoardingServiceController extends MessageController<MessageToService, BoardingService>{
     protected BoardingServiceController(AirportService airportService) {
         super(airportService, Services::boardingService);

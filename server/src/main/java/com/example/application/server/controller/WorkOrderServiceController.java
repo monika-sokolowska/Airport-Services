@@ -2,6 +2,7 @@ package com.example.application.server.controller;
 
 import com.example.application.server.model.WorkOrder;
 import com.example.application.server.service.WorkService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController()
 @RequestMapping("work")
+@Hidden
 public class WorkOrderServiceController {
 
     private final WorkService service;
