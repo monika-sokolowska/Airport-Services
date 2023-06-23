@@ -41,19 +41,6 @@ public class Flight {
                             " ON UPDATE CASCADE"))
     private Status status;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Flight flight = (Flight) o;
-        return Objects.equals(id, flight.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "stand_manager_id", referencedColumnName = "id",
             foreignKey = @ForeignKey(name = "fk_flight_employee",
@@ -71,5 +58,21 @@ public class Flight {
 
     @Column(name = "time_to_service")
     private Integer timeToService;
+
+
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Flight flight = (Flight) o;
+        return Objects.equals(id, flight.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
 }

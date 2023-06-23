@@ -4,7 +4,9 @@ import com.example.application.server.DTOs.FlightDTO;
 import com.example.application.server.entities.Employee;
 import com.example.application.server.entities.Flight;
 import com.example.application.server.entities.Status;
+import com.example.application.server.enums.StatusesEnum;
 import com.example.application.server.exceptions.FlightNotFoundException;
+import com.example.application.server.exceptions.StatusNotFound;
 import com.example.application.server.repositories.FlightRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class FlightService2 {
     private final FlightRepository flightRepository;
+    private final StatusService statusService;
 
     public List<Flight> getFlightsByStatus(String status) {
         return flightRepository.findByStatusStatus(status);
@@ -71,4 +74,14 @@ public class FlightService2 {
     public List<Flight> getFlightsByStandManager(Employee standManger) {
         return flightRepository.findByStandManager(standManger);
     }
+
+    public void finishFlightService(Flight flight) throws StatusNotFound {
+        final Status oldStatus = flight.getStatus();
+        final String newStatusName = StatusesEnum.getNextStatusEnumByStatusName(oldStatus.getStatus()).getStatusName();
+        final Status status = statusService.getStatusByStatusName(newStatusName);
+
+        flight.setStatus(status);
+        flightRepository.save(flight);
+    }
+
 }

@@ -95,4 +95,10 @@ public class EmployeeService2 implements UserDetailsService {
         employee.setBusy(isBusy);
         employeeRepository.save(employee);
     }
+
+    public String getEmployeeDepartment(final UUID employeeId) throws EmployeeNotFoundException {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee with given ID not found: " + employeeId));
+        return employee.getDepartment().getName();
+    }
 }
