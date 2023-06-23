@@ -29,9 +29,32 @@ Navigator
 
 Użytkownik loguje się do systemu za pomocą loginu i hasła. System wyświetla odpowiedni dla użytkownika formularz – navigator. W zależności od tego czy jest to navigator arrival czy navigator departure odblokowane są odpowiednie przyciski. W formularzu znajduje się informacja: WAITING  lub ASSIGNED + NR LOTU.  W osobnym okienku wyświetla się przycisk WAITING FOR START oraz START. W przypadku gdy samolot został przydzielony użytkownik dostaje wiadomość oraz czas. W przypadku kiedy w drugim okienku pojawi się wiadomość START  odblokowuje się mozliwość wciśnięcia przycisku FINISHED. Po wciśnięciu tego przycisku odblokowuje się czas dla pushback service. Po otrzymaniu informacji START po pushback service odblokowuje się  przycisk TAKE OFF. Po kliknięciu tego przycisku pilot może wystartować. Praca dla danego lotu jest zakończona. General manager dostaje informację o wystartowaniu lotu - lot pojawia się na liście Departed Flights. Formularz nawigatora który jest przydzielony do danego samolotu zawiera również pole do wpisania numeru lotu oraz przycisk LANDED który jest odblokowany, aby navigator mógł zgłosić lądowanie danego lotu.
 
+Kolejność serwisów:
+
+LANDING -> Navigator -> GeneralManager -> StandManager -> LuggageArrivalService -> BoardingArrivalService -> CleaningService -> CateringService -> TankingService -> BoardingDepartureService -> LuggageDepartureService -> Navigator -> PushbackService -> Navigator -> DEPARTURE
+
 UI
 
 Strona logowania:
 
 ![image](https://github.com/monika-sokolowska/Airport-Services/assets/92268170/568e1271-a387-4194-866c-f3b6ea1307f7)
+
+Formularz General Managera:
+
+![image](https://github.com/monika-sokolowska/Airport-Services/assets/92268170/56dc4219-ddf7-4c1b-9919-fe500f07ebc4)
+
+Formularz Stand Managera:
+
+![image](https://github.com/monika-sokolowska/Airport-Services/assets/92268170/ad7a206e-c52b-4a69-841a-209152c936b5)
+
+![image](https://github.com/monika-sokolowska/Airport-Services/assets/92268170/6f8e3ec6-3669-40db-8ecf-850c4c460e65)
+
+Formularz przykladowego serwisu Luggage Service (inne formularze analogiczne):
+
+![image](https://github.com/monika-sokolowska/Airport-Services/assets/92268170/4b2239ef-df48-45c4-937a-0e5488fb41d8)
+
+Formularz Navigatora: 
+
+![image](https://github.com/monika-sokolowska/Airport-Services/assets/92268170/43e45a4e-1b38-4767-b57d-ec85558268e9)
+
 
