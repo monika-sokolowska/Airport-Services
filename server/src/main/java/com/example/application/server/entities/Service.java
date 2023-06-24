@@ -37,6 +37,9 @@ public class Service {
     @Column(name = "time_to_service")
     private int timeToService;
 
+    @Column(name = "message", length = 511)
+    private String message;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "department_id", referencedColumnName = "id",
             foreignKey = @ForeignKey(name = "fk_services_department",

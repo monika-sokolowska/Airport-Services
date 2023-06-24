@@ -22,9 +22,9 @@ public enum StatusesEnum {
     STATUS_TANKING("tanking", 8, DepartmentsEnum.SERVICE_TANKING),
     STATUS_BOARDING_DEPARTURE("boardingDeparture", 9, DepartmentsEnum.SERVICE_BOARDING_DEPARTURE),
     STATUS_LUGGAGE_DEPARTURE("luggageDeparture", 10, DepartmentsEnum.SERVICE_LUGGAGE_DEPARTURE),
-    STATUS_NAVIGATOR_TO_PUSHBACK("navigatorToPushback", 11, DepartmentsEnum.NAVIGATOR),
+    STATUS_NAVIGATOR_TO_PUSHBACK("navigatorToPushback", 11, DepartmentsEnum.NAVIGATOR_DEPARTURE),
     STATUS_PUSHBACK("pushback", 12, DepartmentsEnum.SERVICE_PUSHBACK),
-    STATUS_READY("ready", 13, DepartmentsEnum.NAVIGATOR),
+    STATUS_READY("ready", 13, DepartmentsEnum.NAVIGATOR_DEPARTURE),
     STATUS_TAKE_OFF("takeOff", 14, DepartmentsEnum.PILOT);
 
     private final String statusName;

@@ -18,7 +18,8 @@ public enum DepartmentsEnum {
     SERVICE_TANKING("Tanking Service", 7),
     SERVICE_BOARDING_DEPARTURE("Boarding Service (departure)", 8),
     SERVICE_LUGGAGE_DEPARTURE("Luggage Service (departure)", 9),
-    SERVICE_PUSHBACK("Pushback Service", 11),
+    SERVICE_PUSHBACK("Pushback Service", 10),
+    NAVIGATOR_DEPARTURE("Navigator (departure)", 11),
     PILOT("Pilot", 12);
 
 

@@ -19,8 +19,19 @@ public class ServicesService {
     private ServiceRepository serviceRepository;
 
 
-    public void createService(Employee employee, Department department, Flight flight, Integer timeToService) {
-        serviceRepository.save(new com.example.application.server.entities.Service(UUID.randomUUID(), LocalDateTime.now(), null, timeToService, department, flight, Set.of(employee)));
+    public void createService(Employee employee, Department department, Flight flight, Integer timeToService, String message) {
+        Service service = Service.builder()
+                .id(UUID.randomUUID())
+                .serviceStart(LocalDateTime.now())
+                .serviceEnd(null)
+                .timeToService(timeToService)
+                .message(message)
+                .department(department)
+                .flight(flight)
+                .employees(Set.of(employee))
+                .build();
+        serviceRepository.save(service);
+//        serviceRepository.save(new Service(UUID.randomUUID(), LocalDateTime.now(), null, timeToService, department, flight, Set.of(employee)));
     }
 
     public Set<Service> getFlightServices(UUID flightId) {

@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 public class FlightService2 {
     private final FlightRepository flightRepository;
     private final StatusService statusService;
-    private final ServicesService servicesService;
-    private final EmployeesServicesService employeesServicesService;
 
 
     public List<Flight> getFlightsByStatus(String status) {
@@ -84,8 +82,6 @@ public class FlightService2 {
         flight.setStatus(status);
         flightRepository.save(flight);
     }
-
-
 
 
 }

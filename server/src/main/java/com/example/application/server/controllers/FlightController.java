@@ -182,23 +182,25 @@ public class FlightController {
     @ApiResponses(
             value = {
                     @ApiResponse(
+                            responseCode = "404",
+                            content = @Content(
+                                    examples = @ExampleObject(
+                                            name = "Wrong ID(s)",
+                                            value = "X with given id not found: $id",
+                                            description = "Flight, employee or status with given ID doesn't exist"
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
                             responseCode = "400",
                             content = @Content(
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "Wrong ID(s)",
-                                                    value = "X with given id not found: $id",
-                                                    description = "Flight, employee or status with given ID doesn't exist"
-                                            ),
-                                            @ExampleObject(
-                                                    name = "Bad service",
-                                                    value = "This user cannot finish current service."
+                                    examples = @ExampleObject(
+                                            name = "Bad service",
+                                            value = "This user cannot finish current service."
                                                     + " User department: Navigator."
                                                     + " Flight status: tanking.",
-                                                    description = "Employee department and flight status aren't matching."
-                                            )
-
-                                    }
+                                            description = "Employee department and flight status aren't matching."
+                                    )
                             )
                     ),
                     @ApiResponse(
@@ -216,7 +218,7 @@ public class FlightController {
     @Transactional
     @PostMapping("/finished/{employeeId}/{flightId}")
     public ResponseEntity<String> serviceFinished(@PathVariable final UUID employeeId, @PathVariable final UUID flightId) {
-        //noinspection TryWithIdenticalCatches
+
         try {
             Flight flight = flightService.getFlightById(flightId)
                     .orElseThrow(() -> new FlightNotFoundException("Flight with given id not found: " + flightId));
@@ -235,7 +237,7 @@ public class FlightController {
             flightService.finishFlightService(flight);
 
         } catch (FlightNotFoundException | StatusNotFound | EmployeeNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
