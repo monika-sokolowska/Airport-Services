@@ -4,13 +4,14 @@ import com.example.application.server.exceptions.StatusNotFound;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import javax.naming.OperationNotSupportedException;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 @Getter
 @RequiredArgsConstructor
 public enum StatusesEnum {
     // that's nasty
-    STATUS_IN_FLIGHT("inFlight", 0, DepartmentsEnum.NAVIGATOR),
+//    STATUS_IN_FLIGHT("inFlight", 0, DepartmentsEnum.NAVIGATOR),
     STATUS_LANDED("landed", 1, DepartmentsEnum.NAVIGATOR),
     STATUS_GENERAL_MANAGER("generalManager", 2, DepartmentsEnum.GENERAL_MANAGER),
     STATUS_STAND_MANAGER("standManager", 3, DepartmentsEnum.STAND_MANAGER),
@@ -24,19 +25,11 @@ public enum StatusesEnum {
     STATUS_NAVIGATOR_TO_PUSHBACK("navigatorToPushback", 11, DepartmentsEnum.NAVIGATOR),
     STATUS_PUSHBACK("pushback", 12, DepartmentsEnum.SERVICE_PUSHBACK),
     STATUS_READY("ready", 13, DepartmentsEnum.NAVIGATOR),
-    STATUS_TAKE_OFF("takeOff", 14, DepartmentsEnum.NAVIGATOR);
+    STATUS_TAKE_OFF("takeOff", 14, DepartmentsEnum.PILOT);
 
     private final String statusName;
     private final int statusCode;
-    private final DepartmentsEnum department;   // if emp. sends two requests, he could "skip" one service, what shouldn't be possible
-                                                    // says who can push
-//    public static StatusesEnum getStatusEnumByStatusName(String statusName) throws StatusNotFound {
-//        try {
-//            return StatusesEnum.valueOf(statusName.toUpperCase());
-//        } catch (IllegalArgumentException e) {
-//            throw new StatusNotFound("Status is not found: " + statusName);
-//        }
-//    }
+    private final DepartmentsEnum department;
 
     public static StatusesEnum getStatusEnumByStatusName(String statusName) throws StatusNotFound {
         for (StatusesEnum status : StatusesEnum.values()) {
@@ -49,7 +42,7 @@ public enum StatusesEnum {
 
 
 
-    public static boolean isPushPossible(String statusName, String departmentName) throws StatusNotFound {
+    public static boolean isDepartmentAssignedToStatus(String statusName, String departmentName) throws StatusNotFound {
         StatusesEnum byStatus = getStatusEnumByStatusName(statusName);
         return byStatus.getDepartment().getDepartmentName().equals(departmentName);
     }
@@ -70,5 +63,30 @@ public enum StatusesEnum {
 
         throw new StatusNotFound("Next status not found for status: " + statusName);
     }
+
+
+    /**
+     * @return  1 - if there is ANY `StatusesEnum` with given `departmentName`
+     *                  AFTER `StatusEnum` with given `StatusName`
+     *          0 - if last occurrence of `StatusesEnum` with given `departmentName`
+     *                  is the same as `StatusEnum` with given `StatusName`
+     *          -1 - if there is `StatusesEnum` with given `departmentName`
+     *                  ONLY BEFORE `StatusEnum` with given `StatusName`
+     *
+     * @throws StatusNotFound - when there is no StatusEnum with given parameters
+     */
+    public static int compareDepartmentToStatus(String departmentName, String statusName) throws StatusNotFound {
+
+        final int statusNameCode = StatusesEnum.getStatusEnumByStatusName(statusName).getStatusCode();
+
+        int maxOrder = Stream.of(StatusesEnum.values())
+                .filter(se -> se.department.getDepartmentName().equals(departmentName))
+                .map(se -> se.statusCode)
+                .max(Comparator.comparing(Integer::valueOf))
+                .orElseThrow(() -> new StatusNotFound(""));
+
+        return Integer.compare(maxOrder, statusNameCode);
+    }
+
 
 }

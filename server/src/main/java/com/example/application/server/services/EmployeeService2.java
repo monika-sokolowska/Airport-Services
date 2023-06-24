@@ -5,6 +5,7 @@ import com.example.application.server.entities.Employee;
 import com.example.application.server.entities.Role;
 import com.example.application.server.entities.Status;
 import com.example.application.server.exceptions.EmployeeNotFoundException;
+import com.example.application.server.exceptions.FlightNotFoundException;
 import com.example.application.server.exceptions.StatusNotFound;
 import com.example.application.server.repositories.EmployeeRepository;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,9 @@ public class EmployeeService2 implements UserDetailsService {
     private final EmployeeRepository employeeRepository;
     private final FlightRepository flightRepository;
     private final StatusService statusService;
+    private final ServicesService servicesService;
+    private final EmployeesServicesService employeesServicesService;
+
 
     public Employee getEmployeeById(UUID id) throws EmployeeNotFoundException {
         return employeeRepository.findById(id)
@@ -100,5 +104,11 @@ public class EmployeeService2 implements UserDetailsService {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee with given ID not found: " + employeeId));
         return employee.getDepartment().getName();
+    }
+
+    public boolean isEmployeeAssignedToFlight(final UUID employeeId, final UUID flightId) {
+        return servicesService.getFlightServices(flightId).stream()
+                .map(com.example.application.server.entities.Service::getId)
+                .anyMatch(sId -> employeesServicesService.isEmployeeAssignedToService(employeeId, sId));
     }
 }

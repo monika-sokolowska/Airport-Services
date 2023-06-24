@@ -4,23 +4,24 @@ import com.example.application.server.DTOs.FlightDTO;
 import com.example.application.server.entities.Employee;
 import com.example.application.server.entities.Flight;
 import com.example.application.server.entities.Status;
+import com.example.application.server.entities.Service;
 import com.example.application.server.enums.StatusesEnum;
 import com.example.application.server.exceptions.FlightNotFoundException;
 import com.example.application.server.exceptions.StatusNotFound;
 import com.example.application.server.repositories.FlightRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
-@Service
+@org.springframework.stereotype.Service
 @AllArgsConstructor
 public class FlightService2 {
     private final FlightRepository flightRepository;
     private final StatusService statusService;
+    private final ServicesService servicesService;
+    private final EmployeesServicesService employeesServicesService;
+
 
     public List<Flight> getFlightsByStatus(String status) {
         return flightRepository.findByStatusStatus(status);
@@ -75,7 +76,7 @@ public class FlightService2 {
         return flightRepository.findByStandManager(standManger);
     }
 
-    public void finishFlightService(Flight flight) throws StatusNotFound {
+    public void finishFlightService(final Flight flight) throws StatusNotFound {
         final Status oldStatus = flight.getStatus();
         final String newStatusName = StatusesEnum.getNextStatusEnumByStatusName(oldStatus.getStatus()).getStatusName();
         final Status status = statusService.getStatusByStatusName(newStatusName);
@@ -83,5 +84,8 @@ public class FlightService2 {
         flight.setStatus(status);
         flightRepository.save(flight);
     }
+
+
+
 
 }

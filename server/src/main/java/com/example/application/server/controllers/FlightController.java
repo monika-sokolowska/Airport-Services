@@ -2,6 +2,7 @@ package com.example.application.server.controllers;
 
 import com.example.application.server.DTOs.FlightDTO;
 import com.example.application.server.entities.Airplane;
+import com.example.application.server.entities.Employee;
 import com.example.application.server.entities.Flight;
 import com.example.application.server.entities.Status;
 import com.example.application.server.enums.StatusesEnum;
@@ -10,6 +11,13 @@ import com.example.application.server.exceptions.EmployeeNotFoundException;
 import com.example.application.server.exceptions.FlightNotFoundException;
 import com.example.application.server.exceptions.StatusNotFound;
 import com.example.application.server.services.*;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Flights")
 @RequestMapping("/flight")
 @AllArgsConstructor
 @RestController
@@ -48,6 +57,7 @@ public class FlightController {
      *         on success - OK
      */
     @PostMapping("/navigator/landed")
+    @Transactional
     public ResponseEntity<FlightDTO> landAirplane(@RequestParam String number) {
         Airplane airplane;
         try {
@@ -91,17 +101,122 @@ public class FlightController {
 
 
 
-    /*
-    *
-        * Sprawdzamy jaki jest status dla numeru flightid.
-        * Zmieniamy status tego lotu na kolejny
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    examples = {
+                                            @ExampleObject (
+                                                    name = "START",
+                                                    value = "START",
+                                                    description = "Employee's service is currently assigned to the flight"
+                                            ),
+                                            @ExampleObject (
+                                                    name = "WAITING",
+                                                    value = "WAITING",
+                                                    description = "Employee's service will be assigned to the flight in the future"
+                                            ),
+                                            @ExampleObject (
+                                                    name = "FINISHED",
+                                                    value = "FINISHED",
+                                                    description = "Employee's service was assigned to the flight in the past and won't be in the future"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(
+                                    examples = @ExampleObject (
+                                            name = "ERROR",
+                                            value = "ERROR",
+                                            description =" Employee's service not assigned to the flight"
+                                                    + "OR ids are incorrect"
+                                                    + "OR employee/flight doesn't exist"
+                                                    + "OR status from emp/flight doesn't exist"
+                                    )
+                            )
+                    )
+            }
+    )
+    @GetMapping("/serviceStart/{employeeId}/{flightId}")
+    public ResponseEntity<String> serviceStart(@PathVariable final UUID employeeId, @PathVariable final UUID flightId) {
+        // as below or we could write custom function in order to optimize code (with less fetching)
 
-    * */
+        final String ERROR_MSG = "ERROR";
+        String response = ERROR_MSG;
 
+        final boolean isAssigned = employeeService.isEmployeeAssignedToFlight(employeeId, flightId);
+
+        if(isAssigned)
+            try {
+                final Employee employee = employeeService.getEmployeeById(employeeId);
+                final Flight flight = flightService.getFlightById(flightId)
+                        .orElseThrow(() -> new FlightNotFoundException("Flight with given id not found. " + flightId));
+                final String employeeDepartmentName = employee.getDepartment().getName();
+                final String statusName = flight.getStatus().getStatus();
+
+                if(StatusesEnum.isDepartmentAssignedToStatus(statusName, employeeDepartmentName))
+                    return ResponseEntity.ok("START");
+
+                final int compareResult = StatusesEnum.compareDepartmentToStatus(employeeDepartmentName, statusName);
+                if(compareResult == 1)
+                    response = "WAITING";
+                else if(compareResult == -1)
+                    response = "FINISHED";
+
+            } catch (EmployeeNotFoundException | FlightNotFoundException | StatusNotFound e) {
+                e.printStackTrace();
+            }
+
+        if(response.equals(ERROR_MSG))
+            return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.ok(response);
+
+    }
+
+    /**
+     * Change status to next in order
+     */
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Wrong ID(s)",
+                                                    value = "X with given id not found: $id",
+                                                    description = "Flight, employee or status with given ID doesn't exist"
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Bad service",
+                                                    value = "This user cannot finish current service."
+                                                    + " User department: Navigator."
+                                                    + " Flight status: tanking.",
+                                                    description = "Employee department and flight status aren't matching."
+                                            )
+
+                                    }
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    examples = @ExampleObject(
+                                            name = "SUCCESS",
+                                            value = "Flight status has been updated",
+                                            description = "Status of the flight has been updated."
+                                    )
+                            )
+                    )
+            }
+    )
     @Transactional
     @PostMapping("/finished/{employeeId}/{flightId}")
     public ResponseEntity<String> serviceFinished(@PathVariable final UUID employeeId, @PathVariable final UUID flightId) {
-        String response = "";
+        //noinspection TryWithIdenticalCatches
         try {
             Flight flight = flightService.getFlightById(flightId)
                     .orElseThrow(() -> new FlightNotFoundException("Flight with given id not found: " + flightId));
@@ -110,7 +225,7 @@ public class FlightController {
             final StatusesEnum currentStatus = StatusesEnum.getStatusEnumByStatusName(status.getStatus());
             final String employeeDepartment = employeeService.getEmployeeDepartment(employeeId);
 
-            if(!StatusesEnum.isPushPossible(currentStatus.getStatusName(), employeeDepartment)) {
+            if(!StatusesEnum.isDepartmentAssignedToStatus(currentStatus.getStatusName(), employeeDepartment)) {
                 // TODO ADD CUSTOM EXCEPTION
                 throw new Exception("This user cannot finish service current Service." +
                         "\tUser department: " + employeeDepartment +

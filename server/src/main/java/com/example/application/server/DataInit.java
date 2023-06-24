@@ -211,12 +211,12 @@ public class DataInit {
     }
 
     private void addEmployeesServices() {
-        List<EmployeesServices> fromDatabase =  employeesServicesRepository.findAll();
+        List<EmployeeService> fromDatabase =  employeesServicesRepository.findAll();
         Set<String> asLines = dataReader(PATH + CSV_EMPLOYEES_SERVICES);
-        Set<EmployeesServices> toAdd = asLines.stream()
+        Set<EmployeeService> toAdd = asLines.stream()
                 .map(line -> line.split(DELIMITER))
                 .map(stringArr ->
-                        EmployeesServices.builder()
+                        EmployeeService.builder()
                                 .id(UUID.fromString(stringArr[0]))
                                 .employeeId(UUID.fromString(stringArr[1]))
                                 .serviceId(UUID.fromString(stringArr[2]))

@@ -40,7 +40,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "employees_services")
-public class EmployeesServices {
+public class EmployeeService {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false,
@@ -57,7 +57,7 @@ public class EmployeesServices {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EmployeesServices that = (EmployeesServices) o;
+        EmployeeService that = (EmployeeService) o;
         return Objects.equals(id, that.id);
     }
 
