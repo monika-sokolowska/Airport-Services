@@ -119,8 +119,8 @@ public class DataInit {
                     try {
                         return Employee.builder()
                                 .id(UUID.fromString(stringArr[iterator++]))
-                                .isBusy(Boolean.parseBoolean(stringArr[iterator++]))
                                 .email(stringArr[iterator++])
+                                .isBusy(Boolean.parseBoolean(stringArr[iterator++]))
                                 .password(stringArr[iterator++])
                                 .department(departmentRepository.findById(UUID.fromString(stringArr[iterator++]))
                                         .orElseThrow(() -> new Exception("User department not found")))
@@ -176,7 +176,14 @@ public class DataInit {
                     int iterator = 0;
                     try {
                         Service.ServiceBuilder serviceBuilder =  Service.builder()
-                                .id(UUID.fromString(stringArr[iterator++]))
+                                .id(UUID.fromString(stringArr[iterator++]));
+
+                        StringBuilder message = new StringBuilder();
+                        while(iterator < stringArr.length - 6)
+                            message.append(stringArr[iterator++]).append(",");
+                        message.append(stringArr[iterator++]);
+
+                        serviceBuilder.message(message.toString())
                                 .serviceEnd(LocalDateTime.parse(stringArr[iterator++], formatter))
                                 .serviceStart(LocalDateTime.parse(stringArr[iterator++], formatter))
                                 .timeToService(Integer.parseInt(stringArr[iterator++]))
@@ -185,11 +192,6 @@ public class DataInit {
                                 .flight(flightRepository.findById(UUID.fromString(stringArr[iterator++]))
                                         .orElseThrow(() -> new Exception("Flight with given id for this service doesn't exist")));
 
-                        StringBuilder message = new StringBuilder();
-                        while(iterator < stringArr.length)
-                            message.append(stringArr[iterator++]);
-
-                        serviceBuilder.message(message.toString());
 
                         return serviceBuilder.build();
 

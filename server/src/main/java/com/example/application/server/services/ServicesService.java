@@ -1,5 +1,6 @@
 package com.example.application.server.services;
 
+import com.example.application.server.DTOs.ServiceDTO;
 import com.example.application.server.entities.Department;
 import com.example.application.server.entities.Employee;
 import com.example.application.server.entities.Service;
@@ -36,6 +37,14 @@ public class ServicesService {
 
     public Set<Service> getFlightServices(UUID flightId) {
         return serviceRepository.findAllByFlightId(flightId);
+    }
+
+    public static ServiceDTO convertServiceToDto(Service service) {
+        return ServiceDTO.builder()
+                .flightId(service.getFlight().getId())
+                .message(service.getMessage())
+                .timeToService(service.getTimeToService())
+                .build();
     }
 
 

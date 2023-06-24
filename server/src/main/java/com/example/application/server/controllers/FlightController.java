@@ -11,10 +11,8 @@ import com.example.application.server.exceptions.EmployeeNotFoundException;
 import com.example.application.server.exceptions.FlightNotFoundException;
 import com.example.application.server.exceptions.StatusNotFound;
 import com.example.application.server.services.*;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,9 +32,6 @@ import java.util.UUID;
 @RestController
 @CrossOrigin
 public class FlightController {
-
-    private final String DEPARTURE = "departure"; // TODO export to some class, enum
-    private final String LANDED = "landed"; // TODO export to some class, enum
 
     private final FlightService2 flightService;
     private final AirplaneService airplaneService;
@@ -69,17 +64,29 @@ public class FlightController {
         // the following checks if the airplane is already serviced
         List<Flight> flights = flightService.getFlightsByAirplaneNumber(number);
         if (!flights.isEmpty()) {
-            long isAlreadyServiced = flights.stream()
-                    .map(Flight::getStatus)
-                    .filter(status -> !status.getStatus().equals(DEPARTURE))
-                    .count();
-            if(isAlreadyServiced > 0)
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+            try {
+                long isAlreadyServiced = flights.stream()
+                        .map(f -> f.getStatus().getStatus())
+                        .filter(status -> {
+                            try {
+                                return StatusesEnum.getStatusEnumByStatusName(status).getStatusCode() >= StatusesEnum.STATUS_LUGGAGE_ARRIVAL.getStatusCode();
+                            } catch (StatusNotFound e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
+                        .count();
+                if(isAlreadyServiced > 0)
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            } catch (RuntimeException e) {
+                return ResponseEntity.internalServerError().build();
+            }
+
         }
 
         Status status;
         try {
-            status = statusService.getStatusByStatusName(LANDED);
+            status = statusService.getStatusByStatusName(StatusesEnum.STATUS_LANDED.getStatusName());
         } catch (StatusNotFound e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

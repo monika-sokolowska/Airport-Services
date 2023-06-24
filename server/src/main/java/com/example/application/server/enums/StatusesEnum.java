@@ -25,7 +25,7 @@ public enum StatusesEnum {
     STATUS_NAVIGATOR_TO_PUSHBACK("navigatorToPushback", 11, DepartmentsEnum.NAVIGATOR_DEPARTURE),
     STATUS_PUSHBACK("pushback", 12, DepartmentsEnum.SERVICE_PUSHBACK),
     STATUS_READY("ready", 13, DepartmentsEnum.NAVIGATOR_DEPARTURE),
-    STATUS_TAKE_OFF("takeOff", 14, DepartmentsEnum.PILOT);
+    STATUS_DEPARTURE("departure", 14, DepartmentsEnum.PILOT);
 
     private final String statusName;
     private final int statusCode;
