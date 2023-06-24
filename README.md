@@ -1,31 +1,60 @@
 Airport services management
 
-Projekt uruchamiany jest poprzez wysyłanie wiadomości poprzez endpointy zawarte w klasach z "Controller" w nazwie.
+Projekt jest aplikacją do zarządzania pracą niewielkiego lokalnego lotniska. Praca lotniska została uproszczona do funkcjonowania podstawowych serwisów, stand managera, general manaera oraz navigatora. Każdej z tych funkcji odpowiada jeden pracownik na dany lot, który jest przedstawicielem danego serwisu/funkcji. Pracownicy po zalogowaniu aplikacji moga wyświetlić formularz adekwatny do danej roli, w którym mogą wykonać swoje zadania - np. przypisywanie pracowników, wysylanie i otrzymywanie wiadomości dotytczącej obsługi danego lotu i czasu w jakim należy wykonać swój serwis. Formularze również dostarczają infpormacji kiedy dany serwis może rozpocząć swoją prace i pozwalają na przesłanie informacji o zakończeniu pracy. Każdy lot posiada status, który przedstawia informację który serwis aktualnie obsluguje dany lot. Aplikacja stworzona jest poza harmonogramem . Każdy pracownik posiada swój harmonogram pracy, na lotnisku istnieje z góry ustalony harmonogram lotów, który pracownicy znają i posiadają w formie elektronicznej. Aplikacja słuzy wyłącznie do kontrolowania procesu obsługi każdego lotu.
 
-GeneralManager ma możliwość wysłania wiadomości i czasu przeznaczonego na obsługę samolotu do StandManagera.
+Wykorzystane technologie:
 
-StandManager ma możliwość wysłania wiadomości, czasu przeznaczonego na obsługę samolotu do wybranego przez siebie, dostępnego serwisu. Ponadto wysłanie opcji "finished" rozpoczyna procedurę obsługi lotu.
+Backend: Java + SpringBoot
+Frontend: JS + React
+BazaDanych: PostgreSQL
 
-Poszczególne serwisy poprzez wysyłanie wiadomości finished, landed, finisheddeparture albo ready przekazują następnemu w kolejce serwisowi, że może zacząć pracę, w kolejności:
+Szczegółowy opis działania aplikacji oraz poszczególnych formularzy:
 
-Pilot (landed) -> GeneralManager (send) -> StandManager (send) -> StandManager (finished) -> LuggageService (finished) -> BoardingService (finished) -> CleaningService (finished) -> CateringService (finished) -> TankingService (finished) -> BoardingService (finisheddeparture) -> LuggageService (finisheddeparture) -> Pilot (finished) -> PushbackService (finished) -> State (ready)
+Uzytkownik loguje się za pomocą loginu i hasła. Następnie system wyświetla odpowiedni dla użytkownika formularz. Użytkownicy są dodawani przez administratora systemu. 
 
-Wzorce strukturalne: Fasada, Most
+General Manager
 
-Wzorce behawioralne: Stan, Metoda Szablonowa, Iterator
+General manager posiada informacje na temat czasu do następnego odlotu z zewnętrznego serwisu – harmonogramu lotów. Użytkownik loguje się do systemu za pomocą loginu i hasła. System wyświetla odpowiedni dla użytkownika formularz – general manager. W formularzu wyświetlają się informacje o użytkowniku, lista lotów które wylądowały oraz lista lotów które odlecialy  - obie listy odświeżane co sekundę. 
+W przypadku gdy samolot wylądował General manager może kliknąć w lot wyświetlany na liście. Po kliknięciu odblokowuje się mozliwośc przydzielenia do lotu o danym numerze Stand Managera oraz czas do odlotu i wiadomość. General manager przydziela stand managera ze zbioru stand managerów. Po przydzieleniu = kliknięciu na przycisk ASSIGN pokazuje mu się nowy, pusty formularz. General manager może przełączać pomiędzy lotami i przypisywać pracowników w dowolnej kolejności według własnego harmonogramu. 
 
-Wzorce kreacyjne: Builder, Singleton
+Stand Manager
 
-Metoda szablonowa - utworzenie abstract flight state zawierającego metody poszczególnych stanów. Konkretne stany nadpisują metodę która dotyczy ich stanu np. PilotState nadpisuje metodę landed(). Jeżeli metoda zostanie użyta w innym stanie pojawia się błąd.
+Użytkownik loguje się do systemu za pomocą loginu i hasła. System wyświetla odpowiedni dla użytkownika formularz – stand manager. W formularzu wyświetlają się informacje o użytkowniku, lista lotów które zostaly do danego uzytkownika przpisane przez General Managera. W przypadku gdy samolot został przydzielony stand manager może wybrać go z listy i rozpocząć przypisywanie użytkowników z danego serwisu. Stand manager po kliknięciu na dany lot dostaje wiadomość oraz czas i odblokowuje się mozliwość przydzielania serwisów i nawigatora dla danego lotu. W formularzu znajdują się sekcje do przydzielania pracownika, czasu i wiadomości dla każdego z serwisów w kolejności wykonywania zadań. Przydzielanie pracownika polega na wybraniu pracownika z dostepnych pracowników z listy rozwijanej, przydzielenie czasu i wiadomości polega na wpisaniu informacji w odpowiednie pole, następnie konieczne jest kliknięcie przycisku ASSIGN. Jak wszystkie wiadomości zostaną przydzielone odblokowuje się stand managerowi przycisk START. Rozpoczyna to czas pierwszego serwisu na wykonanie zadania - Luggage Service.
 
-Most - połączenie między GUI a API
+Serwisy
 
-Stan - utworzenie stanu dla każdego etapu działania poszczególnych serwisów, utworzenie kolejności zdarzeń - jeżeli aiport service posiada konkretny stan nie możemy w nim wywołać działań dla innch stanów
+Użytkownik loguje się do systemu za pomocą loginu i hasła. System wyświetla odpowiedni dla serwisu formularz – np. Luggage Service. W formularzu znajduje się informacja: WAITING  lub ASSIGNED + NR LOTU.  W osobnym okienku wyświetla się przycisk WAITING FOR START oraz START. Użytkownik jest przedstawicielem danego serwisu – na każdy lot do każdego serwisu przydzielany jest jeden użytkownik.  W przypadku gdy samolot został przydzielony użytkownik dostaje wiadomość oraz czas. W przypadku kiedy w drugin okienku pojawi się wiadomość START  odblokowuje się mozliwość wciśnięcia przycisku FINISHED. Po wciśnięciu tego przycisku odblokowuje się czas dla następnego w kolejce serwisu (lub nawigatora).
 
-Fasada - stworzenie rekordu zawierającego wszystkie serwisy dla danego lotu, które przechowywane są w airport service
+Navigator
 
-Builder - budowanie obiektu zawierającego informacje o rodzaju pracy do wykonania
+Użytkownik loguje się do systemu za pomocą loginu i hasła. System wyświetla odpowiedni dla użytkownika formularz – navigator. W zależności od tego czy jest to navigator arrival czy navigator departure odblokowane są odpowiednie przyciski. W formularzu znajduje się informacja: WAITING  lub ASSIGNED + NR LOTU.  W osobnym okienku wyświetla się przycisk WAITING FOR START oraz START. W przypadku gdy samolot został przydzielony użytkownik dostaje wiadomość oraz czas. W przypadku kiedy w drugim okienku pojawi się wiadomość START  odblokowuje się mozliwość wciśnięcia przycisku FINISHED. Po wciśnięciu tego przycisku odblokowuje się czas dla pushback service. Po otrzymaniu informacji START po pushback service odblokowuje się  przycisk TAKE OFF. Po kliknięciu tego przycisku pilot może wystartować. Praca dla danego lotu jest zakończona. General manager dostaje informację o wystartowaniu lotu - lot pojawia się na liście Departed Flights. Formularz nawigatora który jest przydzielony do danego samolotu zawiera również pole do wpisania numeru lotu oraz przycisk LANDED który jest odblokowany, aby navigator mógł zgłosić lądowanie danego lotu.
 
-Singleton - bazy danych zdefiniowane jako @Component
+Kolejność serwisów:
 
-Iterator - użycie do przechodzenia po liście WorkOrders w celu znalezienia prac spełniających kryteria iteracji (po numerze lotu)
+LANDING -> Navigator -> GeneralManager -> StandManager -> LuggageArrivalService -> BoardingArrivalService -> CleaningService -> CateringService -> TankingService -> BoardingDepartureService -> LuggageDepartureService -> Navigator -> PushbackService -> Navigator -> DEPARTURE
+
+UI
+
+Strona logowania:
+
+![image](https://github.com/monika-sokolowska/Airport-Services/assets/92268170/568e1271-a387-4194-866c-f3b6ea1307f7)
+
+Formularz General Managera:
+
+![image](https://github.com/monika-sokolowska/Airport-Services/assets/92268170/56dc4219-ddf7-4c1b-9919-fe500f07ebc4)
+
+Formularz Stand Managera:
+
+![image](https://github.com/monika-sokolowska/Airport-Services/assets/92268170/ad7a206e-c52b-4a69-841a-209152c936b5)
+
+![image](https://github.com/monika-sokolowska/Airport-Services/assets/92268170/6f8e3ec6-3669-40db-8ecf-850c4c460e65)
+
+Formularz przykladowego serwisu Luggage Service (inne formularze analogiczne):
+
+![image](https://github.com/monika-sokolowska/Airport-Services/assets/92268170/4b2239ef-df48-45c4-937a-0e5488fb41d8)
+
+Formularz Navigatora: 
+
+![image](https://github.com/monika-sokolowska/Airport-Services/assets/92268170/43e45a4e-1b38-4767-b57d-ec85558268e9)
+
+
