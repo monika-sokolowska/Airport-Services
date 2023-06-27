@@ -22,6 +22,8 @@ public enum DepartmentsEnum {
     NAVIGATOR_DEPARTURE("Navigator (departure)", 11),
     PILOT("Pilot", 12);
 
+    // admin
+    // Stand Manager (departure)
 
     private final String departmentName;
     private final int order;

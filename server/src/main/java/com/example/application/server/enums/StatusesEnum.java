@@ -10,8 +10,8 @@ import java.util.stream.Stream;
 @Getter
 @RequiredArgsConstructor
 public enum StatusesEnum {
+
     // that's nasty
-//    STATUS_IN_FLIGHT("inFlight", 0, DepartmentsEnum.NAVIGATOR),
     STATUS_LANDED("landed", 1, DepartmentsEnum.NAVIGATOR),
     STATUS_GENERAL_MANAGER("generalManager", 2, DepartmentsEnum.GENERAL_MANAGER),
     STATUS_STAND_MANAGER("standManager", 3, DepartmentsEnum.STAND_MANAGER),
