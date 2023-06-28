@@ -27,7 +27,7 @@ export const useServiceForm = () => {
       if (assignedFlight) {
         setFlight(assignedFlight);
         setMessage(assignedFlight.message);
-        setTime(assignedFlight.time);
+        setTime(assignedFlight.timeToService);
         if (serviceStart != "START") dispatch(getStartService(user.id));
         else {
           setDisabledButton(false);

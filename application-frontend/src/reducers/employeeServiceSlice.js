@@ -3,6 +3,7 @@ import {
   getAssignedFlightThunk,
   getStartServiceThunk,
   postFinishedThunk,
+  postLandedThunk,
 } from "./employeeServiceThunk";
 import { toast } from "react-toastify";
 
@@ -15,7 +16,7 @@ const initialState = {
 export const getAssignedFlight = createAsyncThunk(
   "employeeService/getAssignedFlight",
   async (userId) => {
-    return getAssignedFlightThunk(`/employeeService/${userId}/getFlight`);
+    return getAssignedFlightThunk(`/service/getServiceInfo/${userId}`);
   }
 );
 
@@ -23,6 +24,13 @@ export const getStartService = createAsyncThunk(
   "employeeService/getAssignedFlight",
   async (userId) => {
     return getStartServiceThunk(`/employeeService/${userId}/serviceStart`);
+  }
+);
+
+export const postLanded = createAsyncThunk(
+  "employeeService/postLanded",
+  async (flightNumber) => {
+    return postLandedThunk(`/flight/navigator/landed?number=${flightNumber}`);
   }
 );
 

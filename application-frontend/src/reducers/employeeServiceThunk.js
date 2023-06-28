@@ -26,3 +26,13 @@ export const postFinishedThunk = async (url) => {
     toast.error("Something went wrong...");
   }
 };
+
+export const postLandedThunk = async (url) => {
+  try {
+    const resp = await customFetch.post(url);
+    toast.success(`Plane landed - information sent`);
+    return resp.data;
+  } catch (error) {
+    toast.error("Request was not sent due to error");
+  }
+};

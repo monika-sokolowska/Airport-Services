@@ -2,11 +2,12 @@ import "../Dashboard.css";
 import "./NavigateForm.css";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { clearStore } from "../../../reducers/userSlice";
-import customFetch from "../../../utils/axios";
+import { useServiceForm } from "../hooks/useServiceForm";
 import { toast } from "react-toastify";
+import { useState } from "react";
+import { postLanded } from "../../../reducers/employeeServiceSlice";
 
 const initialState = {
   flightNumber: "",
@@ -14,12 +15,14 @@ const initialState = {
 
 const NavigateForm = () => {
   const { user } = useSelector((store) => store.user);
-  const [disabledButton, setDisabledButton] = useState(true);
   const [disabledButtonTakeOff, setDisabledButtonTakeOff] = useState(true);
   const [disabledButtonLanded, setDisabledButtonLanded] = useState(false);
   const dispatch = useDispatch();
-
   const [values, setValues] = useState(initialState);
+
+  const { flight, start, message, time, disabledButton, finishService } =
+    useServiceForm();
+
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -27,23 +30,9 @@ const NavigateForm = () => {
     setValues({ ...values, [name]: value });
   };
 
-  const landed = async (url) => {
-    try {
-      const resp = await customFetch.post(url);
-      toast.success(`Plane ${values.flightNumber} landed - information sent`);
-      return resp.data;
-    } catch (error) {
-      toast.error("Request was not sent due to error");
-    }
-  };
-
-  const postLanded = () => {
-    landed(`/flight/navigator/landed?number=${values.flightNumber}`);
-  };
-
   const handleLandedClick = () => {
-    if (values.flightNumber != "") {
-      postLanded();
+    if (values.flightNumber !== "") {
+      dispatch(postLanded(values.flightNumber));
     } else {
       toast.error("Flight number expected");
     }
@@ -76,12 +65,12 @@ const NavigateForm = () => {
               <textarea
                 className="flight-message"
                 style={{ minHeight: "35px", width: "100%", height: "150px" }}
-                value=""
+                value={message}
                 cols="10"
                 readOnly></textarea>
               <h1>Time</h1>
               <div className="departed-flights">
-                <h1>00:30:00</h1>
+                <h1>{time}</h1>
               </div>
             </div>
           </div>
@@ -92,19 +81,17 @@ const NavigateForm = () => {
             <form className="general-form">
               <label>Flight status</label>
               <input
-                name="flight-status"
                 disabled={true}
-                value="WAITING"
+                value={
+                  flight.flightId
+                    ? `ASSIGNED FLIGHT ${flight.flightId}`
+                    : "WAITING"
+                }
                 className="input-disabled"
               />
 
               <label>Start service status</label>
-              <input
-                name="start-service"
-                disabled={true}
-                value="WAITING"
-                className="input-disabled"
-              />
+              <input disabled={true} value={start} className="input-disabled" />
 
               <div className="button-container">
                 <button
@@ -114,20 +101,20 @@ const NavigateForm = () => {
                       ? "assign-btn-disabled"
                       : "assign-btn-enabled"
                   }
-                  onClick={handleLandedClick}>
+                  onClick={() => finishService()}>
                   Take off
                 </button>
-                <button
+                <input
                   disabled={disabledButton}
-                  type="button"
+                  type="submit"
+                  value="Finish"
                   className={
                     disabledButton
                       ? "assign-btn-disabled"
                       : "assign-btn-enabled"
                   }
-                  onClick={handleLandedClick}>
-                  Finish
-                </button>
+                  onClick={() => finishService()}
+                />
               </div>
 
               <label>Flight number</label>
