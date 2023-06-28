@@ -6,7 +6,5 @@ export const getFlightsThunk = async (url) => {
     const resp = await customFetch.get(url);
     console.log("resp", resp.data);
     return resp.data;
-  } catch (error) {
-    toast.error("Could not fetch data");
-  }
+  } catch (error) {}
 };

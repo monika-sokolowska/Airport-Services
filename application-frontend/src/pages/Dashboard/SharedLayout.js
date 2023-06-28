@@ -16,9 +16,9 @@ const SharedLayout = () => {
         return <GeneralManagerForm />;
       case "Stand Manager":
         return <StandManagerForm />;
-      case "Luggage Service 1":
+      case "Luggage Service":
         return <LuggageArrival />;
-      case "Navigator 1":
+      case "Navigator":
         return <NavigateForm />;
       default:
         return <LayoutError />;

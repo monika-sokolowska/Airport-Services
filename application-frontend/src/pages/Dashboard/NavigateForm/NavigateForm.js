@@ -42,7 +42,6 @@ const NavigateForm = () => {
   };
 
   const handleLandedClick = () => {
-    console.log(values.flightNumber);
     if (values.flightNumber != "") {
       postLanded();
     } else {
@@ -77,7 +76,7 @@ const NavigateForm = () => {
               <textarea
                 className="flight-message"
                 style={{ minHeight: "35px", width: "100%", height: "150px" }}
-                value="FLIGHT 9558347"
+                value=""
                 cols="10"
                 readOnly></textarea>
               <h1>Time</h1>
