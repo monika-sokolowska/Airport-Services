@@ -59,7 +59,8 @@ public class Flight {
     @Column(name = "time_to_service")
     private Integer timeToService;
 
-
+    @Column(name = "message")
+    private String message;
 
 
     @Override

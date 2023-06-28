@@ -9,6 +9,7 @@ import com.example.application.server.exceptions.FlightNotFoundException;
 import com.example.application.server.services.EmployeeService2;
 import com.example.application.server.services.FlightService2;
 import com.example.application.server.services.RoleService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpStatus;
@@ -30,12 +31,15 @@ public class GeneralManagerControllers {
     private RoleService roleService;
     private FlightService2 flightService;
 
-    @GetMapping("/standManagers")    public ResponseEntity<List<EmployeeDTO>> availableStandManager()
-    {        List<Employee> standManager;
+    @GetMapping("/standManagers")
+    public ResponseEntity<List<EmployeeDTO>> availableStandManager() {
+        List<Employee> standManager;
         int numberOfFlights = 3;
-        try {            standManager = employeeService.getAvailableStandMangers(roleService.getRoleByName("stand manager"), numberOfFlights);
-        } catch (EmployeeNotFoundException | RoleNotFoundException e)
-        {            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();        }
+        try  {
+            standManager = employeeService.getAvailableStandMangers(roleService.getRoleByName("stand manager"), numberOfFlights);
+        } catch (EmployeeNotFoundException | RoleNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
         return ResponseEntity.ok(standManager.stream().map(employeeService::convertEmployeeToEmployeeDTO).toList());
     }
 
@@ -51,6 +55,7 @@ public class GeneralManagerControllers {
     }
 
     @GetMapping("/flightDeparture")
+    @Transactional
     public ResponseEntity<List<FlightDTO>> flightsDeparture(@RequestParam(defaultValue = "departure") String status){
         List<Flight> flightsByStatus = flightService.getFlightsByStatus(status);
         return ResponseEntity.ok(flightsByStatus.stream().map(flightService::convertFlightToDto).toList());

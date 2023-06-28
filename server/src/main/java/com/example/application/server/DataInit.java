@@ -146,10 +146,18 @@ public class DataInit {
                 .map(stringArr -> {
                     int iterator = 0;
                     try {
-                        return Flight.builder()
+                        Flight.FlightBuilder flightBuilder = Flight.builder()
                                 .id(UUID.fromString(stringArr[iterator++]))
                                 .arrivalTime(LocalDateTime.parse(stringArr[iterator++], formatter))
-                                .departureTime(LocalDateTime.parse(stringArr[iterator++], formatter))
+                                .departureTime(LocalDateTime.parse(stringArr[iterator++], formatter));
+
+                        StringBuilder message = new StringBuilder();
+                        while(iterator < stringArr.length - 5)
+                            message.append(stringArr[iterator++]).append(",");
+                        message.append(stringArr[iterator++]);
+
+                        return flightBuilder
+                                .message(message.toString())
                                 .timeToService(Integer.valueOf(stringArr[iterator++]))
                                 .airplane(airplaneRepository.findById(UUID.fromString(stringArr[iterator++]))
                                         .orElseThrow(() -> new Exception("Airplane with given id for this flight doesn't exist")))

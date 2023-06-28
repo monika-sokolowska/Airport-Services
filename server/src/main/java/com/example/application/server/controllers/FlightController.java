@@ -91,15 +91,16 @@ public class FlightController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
-        Flight flight = new Flight(
-                UUID.randomUUID(),
-                airplane,
-                status,
-                null,
-                LocalDateTime.now(),
-                null,
-                null
-        );
+        Flight flight = Flight.builder()
+                .id(UUID.randomUUID())
+                .airplane(airplane)
+                .status(status)
+                .standManager(null)
+                .arrivalTime(LocalDateTime.now())
+                .departureTime(null)
+                .timeToService(null)
+                .message(null)
+                .build();
         flightService.saveFlight(flight);
 
         return ResponseEntity.ok(flightService.convertFlightToDto(flight));

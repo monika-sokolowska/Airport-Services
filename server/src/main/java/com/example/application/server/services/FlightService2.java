@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class FlightService2 {
     private final FlightRepository flightRepository;
     private final StatusService statusService;
-
+    private final ServicesService servicesService;
 
     public List<Flight> getFlightsByStatus(String status) {
         return flightRepository.findByStatusStatus(status);
@@ -33,7 +33,8 @@ public class FlightService2 {
         return new FlightDTO(
                 flight.getId(),
                 flight.getAirplane().getNumber(),
-                flight.getTimeToService()
+                flight.getTimeToService(),
+                flight.getMessage()
         );
     }
 
@@ -64,7 +65,9 @@ public class FlightService2 {
         Flight updatedFlight = flightById.get();
         updatedFlight.setStandManager(standManager);
         updatedFlight.setTimeToService(timeToService);
-        //TODO po co ta message ?
+        updatedFlight.setMessage(message);
+
+        // TODO po co ta message ?
         // Czy zmieniamy tu status lotu na standmanager
         flightRepository.save(updatedFlight);
 

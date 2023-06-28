@@ -39,10 +39,13 @@ public class StandManagerControllers {
 
     @GetMapping("{standManagerId}/getFlights")
     public ResponseEntity<List<FlightDTO>> assignedFlights(@PathVariable UUID standManagerId) {
+        // TODO add messages*
         List<Flight> departure;
         try {
             Employee standManger = employeeService.getEmployeeById(standManagerId);
-            departure = flightService.getFlightsByStandManager(standManger).stream().filter(flight -> !flight.getStatus().getStatus().equals("departure")).toList();
+            departure = flightService.getFlightsByStandManager(standManger).stream()
+                    .filter(flight -> !flight.getStatus().getStatus().equals(StatusesEnum.STATUS_DEPARTURE.getStatusName()))
+                    .toList();
         } catch (EmployeeNotFoundException e) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, e.getMessage(), e);
