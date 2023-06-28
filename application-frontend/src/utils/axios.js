@@ -1,14 +1,14 @@
 import axios from "axios";
-import { getUserFromLocalStorage } from "./localStorage";
+import { getTokenFromLocalStorage } from "./localStorage";
 
 const customFetch = axios.create({
   baseURL: "http://localhost:8091",
 });
 
 customFetch.interceptors.request.use((config) => {
-  const user = getUserFromLocalStorage();
-  if (user) {
-    config.headers["Authorization"] = `Bearer ${user.token}`;
+  const token = getTokenFromLocalStorage();
+  if (token) {
+    config.headers["Authorization"] = `Bearer ${token.token}`;
   }
   return config;
 });

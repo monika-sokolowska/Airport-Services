@@ -17,6 +17,15 @@ const initialState = {
 };
 
 export const loginUser = createAsyncThunk(
+  "user/loginUserFlow",
+  async (user, thunkAPI) => {
+    const result = await thunkAPI.dispatch(loginUserFlow(user));
+    thunkAPI.dispatch(getUser());
+    return result;
+  }
+);
+
+export const loginUserFlow = createAsyncThunk(
   "user/loginUser",
   async (user, thunkAPI) => {
     const result = await loginUserThunk("/auth/login", user, thunkAPI);
@@ -25,8 +34,9 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-export const getUser = createAsyncThunk("user/getUser", async (thunkAPI) => {
-  return getUserThunk("/employee/get", thunkAPI);
+export const getUser = createAsyncThunk("user/getUser", async (_, thunkAPI) => {
+  const result = await getUserThunk("/employee/get", thunkAPI);
+  return result;
 });
 
 export const clearStore = createAsyncThunk("user/clearStore", clearStoreThunk);
@@ -45,17 +55,17 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginUser.pending, (state) => {
+      .addCase(loginUserFlow.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(loginUser.fulfilled, (state, { payload }) => {
+      .addCase(loginUserFlow.fulfilled, (state, { payload }) => {
         const token = payload;
         console.log("token", payload);
         state.isLoading = false;
         state.token = token;
         addTokenToLocalStorage(token);
       })
-      .addCase(loginUser.rejected, (state, { payload }) => {
+      .addCase(loginUserFlow.rejected, (state, { payload }) => {
         state.isLoading = false;
         toast.error(payload);
       })

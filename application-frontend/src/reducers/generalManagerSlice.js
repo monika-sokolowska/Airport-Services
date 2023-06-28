@@ -12,8 +12,8 @@ const initialState = {
 
 export const assignStandManager = createAsyncThunk(
   "generalManager/assignStandManager",
-  async (url, data, thunkAPI) => {
-    return assignStandManagerThunk(url, data);
+  async (url) => {
+    return assignStandManagerThunk(url);
   }
 );
 
