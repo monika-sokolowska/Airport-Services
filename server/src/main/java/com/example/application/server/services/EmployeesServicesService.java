@@ -21,8 +21,21 @@ public class EmployeesServicesService {
 
     public EmployeeService assignEmployeeToFlight(UUID employeeId, UUID serviceId) {
         return employeesServicesRepository.save(
-          EmployeeService.builder().employeeId(employeeId).serviceId(serviceId).build()
+          EmployeeService.builder().id(UUID.randomUUID()).employeeId(employeeId).serviceId(serviceId).build()
         );
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
