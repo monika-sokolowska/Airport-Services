@@ -75,6 +75,7 @@ const StandManagerForm = () => {
       );
       setFlight(selectedFlight || initialFlight);
       setTime(selectedFlight.timeToService);
+      setMessage(selectedFlight.message);
     }
   };
 
