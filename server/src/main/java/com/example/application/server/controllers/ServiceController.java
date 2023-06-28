@@ -3,7 +3,9 @@ package com.example.application.server.controllers;
 import com.example.application.server.DTOs.ServiceDTO;
 import com.example.application.server.entities.Employee;
 import com.example.application.server.entities.Service;
+import com.example.application.server.enums.StatusesEnum;
 import com.example.application.server.exceptions.EmployeeNotFoundException;
+import com.example.application.server.exceptions.StatusNotFound;
 import com.example.application.server.services.EmployeeService2;
 import com.example.application.server.services.EmployeesServicesService;
 import com.example.application.server.services.ServicesService;
@@ -85,10 +87,28 @@ public class ServiceController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
+        String employeeDepartment = employee.getDepartment().getName();
+
         List<Service> servicesList = employee.getServices().stream()
-                .filter(s -> s.getServiceStart().isBefore(LocalDateTime.now()))
-                .filter(s -> s.getServiceEnd().isAfter(LocalDateTime.now()))
+                .filter(service ->
+                        {
+                            try {
+                                return StatusesEnum.isDepartmentAssignedToStatus(
+                                        service.getFlight().getStatus().getStatus(),
+                                        employeeDepartment
+                                );
+                            } catch (StatusNotFound e) {
+                                e.printStackTrace();
+                                return false;
+                            }
+                        }
+                )
                 .toList();
+
+//        List<Service> servicesList = employee.getServices().stream()
+//                .filter(s -> s.getServiceStart().isBefore(LocalDateTime.now()))
+//                .filter(s -> s.getServiceEnd().isAfter(LocalDateTime.now()))
+//                .toList();
 
         if(servicesList.isEmpty())
             return  ResponseEntity.noContent().build(); // no current services assigned to employee
