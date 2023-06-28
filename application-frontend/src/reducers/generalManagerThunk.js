@@ -1,9 +1,9 @@
 import customFetch from "../utils/axios";
 import { toast } from "react-toastify";
 
-export const assignStandManagerThunk = async (url, data) => {
+export const assignStandManagerThunk = async (url) => {
   try {
-    const resp = await customFetch.post(url, data);
+    const resp = await customFetch.post(url);
     console.log("resp", resp.data);
     return resp.data;
   } catch (error) {

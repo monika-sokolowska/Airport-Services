@@ -1,7 +1,7 @@
 import "../../Dashboard.css";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import "../StandManagerForm.css";
 import { changeServiceAction } from "../../../../reducers/serviceSlice";
 import {
@@ -17,7 +17,7 @@ const initialState = {
   time: "20",
 };
 
-const LuggageArrivalForm = ({ flight }) => {
+const NavigatorForm = ({ flight }) => {
   const { user } = useSelector((store) => store.user);
   const { availableEmployees } = useSelector((store) => store.standManager);
   const dispatch = useDispatch();
@@ -35,10 +35,11 @@ const LuggageArrivalForm = ({ flight }) => {
     setValues({ ...values, [name]: value });
   };
 
-  const filterEmployes = useCallback(() => {
+  useEffect(() => {
+    dispatch(getAvailable(user.id));
     if (availableEmployees) {
       const serviceEmployees = availableEmployees.filter(
-        (availableEmployee) => availableEmployee.service === "Luggage Service"
+        (availableEmployee) => availableEmployee.service === "Navigator"
       );
 
       if (serviceEmployees) {
@@ -49,33 +50,27 @@ const LuggageArrivalForm = ({ flight }) => {
         }
       }
     }
-  }, [availableEmployees, values]);
-
-  useEffect(() => {
-    dispatch(getAvailable(user.id));
-    filterEmployes();
     console.log("flight.flightId", flight.flightId);
     if (flight && flight.flightId) {
       setInputsDisabled(false);
       setDisabledButton(false);
     }
-  }, [flight, flight.flightId]);
+  }, [flight]);
 
   const onSubmit = (e) => {
     e.preventDefault();
     const { employee, message, time } = values;
     console.log("submit", employee, message, time);
     const { flightId } = flight;
-
-    const data = {
-      id: user.id,
-      url: `/standManager/${employee}/assignEmployee?flightId=${flightId}&message=${message}&timeToService=${time}`,
-    };
     if (!employee || !message || !time) {
       toast.error("Please fill out all fields");
       return;
     } else {
-      dispatch(assignEmployee(data));
+      dispatch(
+        assignEmployee(
+          `/standManager/${employee}/assignEmployee?flightId=${flightId}&message=${message}&timeToService=${time}`
+        )
+      );
       setDisabledButton(true);
       setInputsDisabled(true);
       setValues(initialState);
@@ -85,7 +80,7 @@ const LuggageArrivalForm = ({ flight }) => {
 
   return (
     <form className="service-form" onSubmit={onSubmit}>
-      <label className="service-title">Luggage Arrival service</label>
+      <label className="service-title">Navigator</label>
       <div>
         <label>Employee</label>
         <select
@@ -130,14 +125,12 @@ const LuggageArrivalForm = ({ flight }) => {
           <input
             value="Previous"
             className="prev-btn"
-            onClick={() => dispatch(changeServiceAction("CLEANING"))}
-            disabled={true}
-            style={{ backgroundColor: "#767b7e", border: "#767b7e" }}
+            onClick={() => dispatch(changeServiceAction("BOARDING_DEPARTURE"))}
           />
           <input
             value="Next"
             className="next-btn"
-            onClick={() => dispatch(changeServiceAction("BOARDING_ARRIVAL"))}
+            onClick={() => dispatch(changeServiceAction("PUSHBACK"))}
           />
         </div>
         <div className="button-container">
@@ -154,4 +147,4 @@ const LuggageArrivalForm = ({ flight }) => {
     </form>
   );
 };
-export default LuggageArrivalForm;
+export default NavigatorForm;

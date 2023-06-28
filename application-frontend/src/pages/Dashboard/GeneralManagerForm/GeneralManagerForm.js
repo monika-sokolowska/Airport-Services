@@ -5,13 +5,17 @@ import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { clearStore } from "../../../reducers/userSlice";
-import { getFlights } from "../../../reducers/flightsSlice";
-import { getAvailableStandManagers } from "../../../reducers/generalManagerSlice";
+import { getFlights, getDepartedFlights } from "../../../reducers/flightsSlice";
+import { toast } from "react-toastify";
+import {
+  getAvailableStandManagers,
+  assignStandManager,
+} from "../../../reducers/generalManagerSlice";
 
 const initialState = {
   standManager: "",
-  message: "",
-  time: "",
+  message: "Assign all service employees and time for flight",
+  time: "240",
 };
 
 const initialFlight = {
@@ -21,11 +25,13 @@ const initialFlight = {
 
 const GeneralManagerForm = () => {
   const { user } = useSelector((store) => store.user);
-  const { flights } = useSelector((store) => store.fligths);
+  const { flights } = useSelector((store) => store.flights);
+  const { departedFlights } = useSelector((store) => store.flights);
   const { standManagers } = useSelector((store) => store.generalManager);
   const [disabledButton, setDisabledButton] = useState(true);
   const dispatch = useDispatch();
   const [flight, setFlight] = useState(initialFlight);
+  const [inputsDisabled, setInputsDisabled] = useState(true);
 
   const [values, setValues] = useState(initialState);
   const handleChange = (e) => {
@@ -37,9 +43,11 @@ const GeneralManagerForm = () => {
 
   useEffect(() => {
     dispatch(getFlights());
+    dispatch(getDepartedFlights());
 
     const interval = setInterval(() => {
       dispatch(getFlights());
+      dispatch(getDepartedFlights());
     }, 1000);
 
     return () => {
@@ -49,8 +57,33 @@ const GeneralManagerForm = () => {
 
   const setFlightDetails = (id) => {
     dispatch(getAvailableStandManagers());
-    const selectedFlight = flights.find((flight) => flight.flightId === id);
-    setFlight(selectedFlight || initialFlight);
+    if (flights) {
+      const selectedFlight = flights.find((flight) => flight.flightId === id);
+      setFlight(selectedFlight || initialFlight);
+      setDisabledButton(false);
+      setInputsDisabled(false);
+    }
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const { standManager, message, time } = values;
+    const { flightId } = flight;
+    if (!standManager || !message || !time) {
+      toast.error("Please fill out all fields");
+      return;
+    } else {
+      dispatch(
+        assignStandManager(
+          `/generalManager/${standManager}/assigStandManager?flightId=${flightId}&message=${message}&timeToService=${time}`
+        )
+      );
+      setFlight(initialFlight);
+      setDisabledButton(true);
+      setInputsDisabled(true);
+      setValues(initialState);
+      return;
+    }
   };
 
   return (
@@ -76,7 +109,17 @@ const GeneralManagerForm = () => {
           <div className="header">Messages</div>
           <div className="received-info-general">
             <h1>Departed flights</h1>
-            <div className="received-general"></div>
+            <div className="received-general">
+              {departedFlights &&
+                departedFlights.map((item) => {
+                  const { flightId, airplaneNumber } = item;
+                  return (
+                    <div key={flightId} className="departed-flights">
+                      <h1>{airplaneNumber}</h1>
+                    </div>
+                  );
+                })}
+            </div>
 
             <h1>Landed flights</h1>
             <div className="received-general">
@@ -87,7 +130,7 @@ const GeneralManagerForm = () => {
                     <div
                       key={flightId}
                       className="departed-flights"
-                      onClick={setFlightDetails(flightId)}>
+                      onClick={() => setFlightDetails(flightId)}>
                       <h1>{airplaneNumber}</h1>
                     </div>
                   );
@@ -98,7 +141,7 @@ const GeneralManagerForm = () => {
         <div className="right-panel">
           <div className="header">Employee Form</div>
           <div className="employee-panel">
-            <form className="general-form">
+            <form className="general-form" onSubmit={onSubmit}>
               <label>Flight status</label>
               <input
                 disabled={true}
@@ -111,13 +154,20 @@ const GeneralManagerForm = () => {
               />
 
               <label>Stand manager</label>
-              <select className="input-enabled">
-                <option value="Alicja Nowak">Alicja Nowak</option>
-                <option value="Andrzej Kowalczyk">Andrzej Kowalczyk</option>
-                <option selected value="Barbara Nowak">
-                  Barbara Nowak
-                </option>
-                <option value="Elżbieta Nowak">Elżbieta Nowak</option>
+              <select
+                className="input-enabled"
+                name="standManager"
+                onChange={handleChange}
+                disabled={inputsDisabled}>
+                {standManagers &&
+                  standManagers.map((item) => {
+                    const { id, name } = item;
+                    return (
+                      <option key={id} value={id}>
+                        {name}
+                      </option>
+                    );
+                  })}
               </select>
 
               <label>Message</label>
@@ -127,10 +177,18 @@ const GeneralManagerForm = () => {
                 onChange={handleChange}
                 name="message"
                 cols="10"
+                disabled={inputsDisabled}
               />
 
               <label>Time</label>
-              <input value="" className="input-enabled" />
+              <input
+                type="number"
+                name="time"
+                value={values.time}
+                className="input-enabled"
+                onChange={handleChange}
+                disabled={inputsDisabled}
+              />
               <div className="button-container">
                 <input
                   disabled={disabledButton}
