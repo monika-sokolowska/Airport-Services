@@ -23,21 +23,19 @@ import java.util.UUID;
 @RequestMapping("/generalManager")
 @RestController
 @AllArgsConstructor
+@CrossOrigin
 public class GeneralManagerControllers {
 
     private EmployeeService2 employeeService;
     private RoleService roleService;
     private FlightService2 flightService;
 
-    @GetMapping("/standManagers")
-    public ResponseEntity<List<EmployeeDTO>> availableStandManager(@RequestParam @DefaultValue("10") int numberOfFlights) {
-        List<Employee> standManager;
-        try {
-            standManager = employeeService.getAvailableStandMangers(roleService.getRoleByName("stand manager"), numberOfFlights);
-        } catch (EmployeeNotFoundException | RoleNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
+    @GetMapping("/standManagers")    public ResponseEntity<List<EmployeeDTO>> availableStandManager()
+    {        List<Employee> standManager;
+        int numberOfFlights = 3;
+        try {            standManager = employeeService.getAvailableStandMangers(roleService.getRoleByName("stand manager"), numberOfFlights);
+        } catch (EmployeeNotFoundException | RoleNotFoundException e)
+        {            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();        }
         return ResponseEntity.ok(standManager.stream().map(employeeService::convertEmployeeToEmployeeDTO).toList());
     }
 

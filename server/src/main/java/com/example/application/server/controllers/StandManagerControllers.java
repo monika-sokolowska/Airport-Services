@@ -31,6 +31,7 @@ import java.util.UUID;
 @RequestMapping("/standManager")
 @RestController
 @AllArgsConstructor
+@CrossOrigin
 public class StandManagerControllers {
     private FlightService2 flightService;
     private EmployeeService2 employeeService;
