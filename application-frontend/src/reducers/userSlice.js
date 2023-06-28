@@ -4,20 +4,40 @@ import {
   addUserToLocalStorage,
   getUserFromLocalStorage,
   removeUserFromLocalStorage,
+  getTokenFromLocalStorage,
+  addTokenToLocalStorage,
+  removeTokenFromLocalStorage,
 } from "../utils/localStorage";
-import { loginUserThunk, clearStoreThunk } from "./userThunk";
+import { loginUserThunk, clearStoreThunk, getUserThunk } from "./userThunk";
 
 const initialState = {
   isLoading: false,
   user: getUserFromLocalStorage(),
+  token: getTokenFromLocalStorage(),
 };
 
 export const loginUser = createAsyncThunk(
-  "user/loginUser",
+  "user/loginUserFlow",
   async (user, thunkAPI) => {
-    return loginUserThunk("/auth/login", user, thunkAPI);
+    const result = await thunkAPI.dispatch(loginUserFlow(user));
+    thunkAPI.dispatch(getUser());
+    return result;
   }
 );
+
+export const loginUserFlow = createAsyncThunk(
+  "user/loginUser",
+  async (user, thunkAPI) => {
+    const result = await loginUserThunk("/auth/login", user, thunkAPI);
+    thunkAPI.dispatch(getUser());
+    return result;
+  }
+);
+
+export const getUser = createAsyncThunk("user/getUser", async (_, thunkAPI) => {
+  const result = await getUserThunk("/employee/get", thunkAPI);
+  return result;
+});
 
 export const clearStore = createAsyncThunk("user/clearStore", clearStoreThunk);
 const userSlice = createSlice({
@@ -27,6 +47,7 @@ const userSlice = createSlice({
     logoutUser: (state, { payload }) => {
       state.user = null;
       removeUserFromLocalStorage();
+      removeTokenFromLocalStorage();
       if (payload) {
         toast.success(payload);
       }
@@ -34,10 +55,24 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginUser.pending, (state) => {
+      .addCase(loginUserFlow.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(loginUser.fulfilled, (state, { payload }) => {
+      .addCase(loginUserFlow.fulfilled, (state, { payload }) => {
+        const token = payload;
+        console.log("token", payload);
+        state.isLoading = false;
+        state.token = token;
+        addTokenToLocalStorage(token);
+      })
+      .addCase(loginUserFlow.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        toast.error(payload);
+      })
+      .addCase(getUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getUser.fulfilled, (state, { payload }) => {
         const user = payload;
         console.log("payload", payload);
         state.isLoading = false;
@@ -50,7 +85,7 @@ const userSlice = createSlice({
           toast.success(`Welcome ${user.name}`);
         }
       })
-      .addCase(loginUser.rejected, (state, { payload }) => {
+      .addCase(getUser.rejected, (state, { payload }) => {
         state.isLoading = false;
         toast.error(payload);
       })

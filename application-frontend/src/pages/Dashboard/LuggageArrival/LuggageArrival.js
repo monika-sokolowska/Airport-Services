@@ -2,26 +2,22 @@ import "../Dashboard.css";
 import "./LuggageArrival.css";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { clearStore } from "../../../reducers/userSlice";
-
-const initialState = {
-  message: "",
-};
+import {
+  getAssignedFlight,
+  getStartService,
+  postFinished,
+} from "../../../reducers/employeeServiceSlice";
+import { useServiceForm } from "../hooks/useServiceForm";
 
 const LuggageArrival = () => {
   const { user } = useSelector((store) => store.user);
-  const [disabledButton, setDisabledButton] = useState(true);
   const dispatch = useDispatch();
 
-  const [values, setValues] = useState(initialState);
-  const handleChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-
-    setValues({ ...values, [name]: value });
-  };
+  const { flight, start, message, time, disabledButton, finishService } =
+    useServiceForm();
 
   return (
     <div className="form-container">
@@ -50,12 +46,12 @@ const LuggageArrival = () => {
               <textarea
                 className="flight-message"
                 style={{ minHeight: "35px", width: "100%", height: "150px" }}
-                value="FLIGHT 9558347"
+                value={message}
                 cols="10"
                 readOnly></textarea>
               <h1>Time</h1>
               <div className="departed-flights">
-                <h1>00:30:00</h1>
+                <h1>{time}</h1>
               </div>
             </div>
           </div>
@@ -67,16 +63,16 @@ const LuggageArrival = () => {
               <label>Flight status</label>
               <input
                 disabled={true}
-                value="WAITING"
+                value={
+                  flight.flightId
+                    ? `ASSIGNED FLIGHT ${flight.flightId}`
+                    : "WAITING"
+                }
                 className="input-disabled"
               />
 
               <label>Start service status</label>
-              <input
-                disabled={true}
-                value="WAITING"
-                className="input-disabled"
-              />
+              <input disabled={true} value={start} className="input-disabled" />
 
               <div className="button-container">
                 <input
@@ -88,6 +84,7 @@ const LuggageArrival = () => {
                       ? "assign-btn-disabled"
                       : "assign-btn-enabled"
                   }
+                  onClick={() => finishService()}
                 />
               </div>
             </form>
