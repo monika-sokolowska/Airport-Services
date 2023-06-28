@@ -20,7 +20,7 @@ public class ServicesService {
     private ServiceRepository serviceRepository;
 
 
-    public void createService(Employee employee, Department department, Flight flight, Integer timeToService, String message) {
+    public Service createService(Employee employee, Department department, Flight flight, Integer timeToService, String message) {
         Service service = Service.builder()
                 .id(UUID.randomUUID())
                 .serviceStart(LocalDateTime.now())
@@ -31,7 +31,7 @@ public class ServicesService {
                 .flight(flight)
                 .employees(Set.of(employee))
                 .build();
-        serviceRepository.save(service);
+        return serviceRepository.save(service);
 //        serviceRepository.save(new Service(UUID.randomUUID(), LocalDateTime.now(), null, timeToService, department, flight, Set.of(employee)));
     }
 

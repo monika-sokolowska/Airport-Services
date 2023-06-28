@@ -19,6 +19,10 @@ public class EmployeesServicesService {
                 .isPresent();
     }
 
-
+    public EmployeeService assignEmployeeToFlight(UUID employeeId, UUID serviceId) {
+        return employeesServicesRepository.save(
+          EmployeeService.builder().employeeId(employeeId).serviceId(serviceId).build()
+        );
+    }
 
 }

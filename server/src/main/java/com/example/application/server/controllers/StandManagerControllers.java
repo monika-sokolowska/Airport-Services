@@ -4,15 +4,13 @@ import com.example.application.server.DTOs.EmployeeDTO;
 import com.example.application.server.DTOs.FlightDTO;
 import com.example.application.server.entities.Employee;
 import com.example.application.server.entities.Flight;
+import com.example.application.server.entities.Service;
 import com.example.application.server.entities.Status;
 import com.example.application.server.enums.StatusesEnum;
 import com.example.application.server.exceptions.EmployeeNotFoundException;
 import com.example.application.server.exceptions.FlightNotFoundException;
 import com.example.application.server.exceptions.StatusNotFound;
-import com.example.application.server.services.EmployeeService2;
-import com.example.application.server.services.FlightService2;
-import com.example.application.server.services.ServicesService;
-import com.example.application.server.services.StatusService;
+import com.example.application.server.services.*;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -37,6 +35,7 @@ public class StandManagerControllers {
     private EmployeeService2 employeeService;
     private ServicesService servicesService;
     private final StatusService statusService;
+    private final EmployeesServicesService employeesServicesService;
 
     @GetMapping("{standManagerId}/getFlights")
     public ResponseEntity<List<FlightDTO>> assignedFlights(@PathVariable UUID standManagerId) {
@@ -77,7 +76,8 @@ public class StandManagerControllers {
             if (flightById.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
-            servicesService.createService(employee, employee.getDepartment(), flightById.get(), timeToService, message);
+            Service service = servicesService.createService(employee, employee.getDepartment(), flightById.get(), timeToService, message);
+            employeesServicesService.assignEmployeeToFlight(employeeId, service.getId());
             employeeService.updateBusy(employee, true);
         } catch (EmployeeNotFoundException e) {
             throw new ResponseStatusException(
