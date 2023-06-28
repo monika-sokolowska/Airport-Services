@@ -76,7 +76,7 @@ public class ServiceController {
             }
     )
     @GetMapping("/getServiceInfo/{employeeId}")
-    public ResponseEntity<ServiceDTO> getServiceInfoByEmployeeId(@PathVariable UUID employeeId) {
+    public ResponseEntity<ServiceDTO> getServiceInfoByEmployeeId(@PathVariable final UUID employeeId) {
 
         final Employee employee;
         try {
