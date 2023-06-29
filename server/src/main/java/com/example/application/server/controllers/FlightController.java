@@ -11,8 +11,11 @@ import com.example.application.server.exceptions.EmployeeNotFoundException;
 import com.example.application.server.exceptions.FlightNotFoundException;
 import com.example.application.server.exceptions.StatusNotFound;
 import com.example.application.server.services.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,6 +41,24 @@ public class FlightController {
     private final StatusService statusService;
     private final EmployeeService2 employeeService;
 
+
+    @Operation(summary = "Get flights with given status.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "List of all flights with given status.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(
+                                            schema = @Schema(implementation = FlightDTO.class),
+                                            minItems = 0,
+                                            uniqueItems = true
+                                    )
+                            )
+                    )
+            }
+    )
     @GetMapping("/flightsByStatus")
     public ResponseEntity<List<FlightDTO>> getFlightsByStatus(@RequestParam(defaultValue = "landed") String status) {
         List<Flight> flights = flightService.getFlightsByStatus(status);
@@ -45,12 +66,36 @@ public class FlightController {
         return ResponseEntity.ok(flightDTOS);
     }
 
-    /**
-     * @param number number of the airplane
-     * @return if airplane not found - NOT_FOUND
-     *         if found and in the database, but already in service - BAD_REQUEST
-     *         on success - OK
-     */
+
+
+    @Operation(summary = "Land airplane with given number.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Flight has been added to the database.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = FlightDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Airplane is already serviced.",
+                            content = @Content()
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Airplane not found.",
+                            content = @Content()
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Should never occur. Flight status doesn't match any known status. Contact with backend to resolve this problem",
+                            content = @Content()
+                    )
+            }
+    )
     @PostMapping("/navigator/landed")
     @Transactional
     public ResponseEntity<FlightDTO> landAirplane(@RequestParam String number) {
@@ -64,7 +109,6 @@ public class FlightController {
         // the following checks if the airplane is already serviced
         List<Flight> flights = flightService.getFlightsByAirplaneNumber(number);
         if (!flights.isEmpty()) {
-
             try {
                 long isAlreadyServiced = flights.stream()
                         .map(f -> f.getStatus().getStatus())
@@ -76,12 +120,11 @@ public class FlightController {
                             }
                         })
                         .count();
-                if(isAlreadyServiced > 0)
+                if(isAlreadyServiced > 0L)
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             } catch (RuntimeException e) {
                 return ResponseEntity.internalServerError().build();
             }
-
         }
 
         Status status;
@@ -109,6 +152,7 @@ public class FlightController {
 
 
 
+    @Operation(summary = "Get status of employee servicing given flight")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -184,9 +228,11 @@ public class FlightController {
 
     }
 
+
     /**
-     * Change status to next in order
+     * Changes status to next in order
      */
+    @Operation(summary = "End one service for given flight and start another.")
     @ApiResponses(
             value = {
                     @ApiResponse(

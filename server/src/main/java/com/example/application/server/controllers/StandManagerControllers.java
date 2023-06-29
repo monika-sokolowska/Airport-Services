@@ -11,10 +11,14 @@ import com.example.application.server.exceptions.EmployeeNotFoundException;
 import com.example.application.server.exceptions.FlightNotFoundException;
 import com.example.application.server.exceptions.StatusNotFound;
 import com.example.application.server.services.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Tag(name = "Stand Manager")
 @RequestMapping("/standManager")
 @RestController
 @AllArgsConstructor
@@ -37,9 +42,26 @@ public class StandManagerControllers {
     private final StatusService statusService;
     private final EmployeesServicesService employeesServicesService;
 
+    @Operation(
+            summary = "Get flights assigned to stand manager.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Success",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = FlightDTO.class))
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Stand manager not found.",
+                            content = @Content() // TODO set correct response
+                    )
+            }
+    )
     @GetMapping("{standManagerId}/getFlights")
     public ResponseEntity<List<FlightDTO>> assignedFlights(@PathVariable UUID standManagerId) {
-        // TODO add messages*
         List<Flight> departure;
         try {
             Employee standManger = employeeService.getEmployeeById(standManagerId);
@@ -54,6 +76,24 @@ public class StandManagerControllers {
         return ResponseEntity.ok(departure.stream().map(flightService::convertFlightToDto).toList());
     }
 
+    @Operation(
+            summary = "Get employees for stand manager by busy status.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Success",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = EmployeeDTO.class))
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Stand manager not found.",
+                            content = @Content() // TODO set correct response
+                    )
+            }
+    )
     @GetMapping("{standManagerId}/getEmployees")
     public ResponseEntity<List<EmployeeDTO>> getAvailableEmployees(@PathVariable UUID standManagerId, @RequestParam boolean isBusy
     ) {
@@ -70,13 +110,31 @@ public class StandManagerControllers {
 
     }
 
+    @Operation(
+            summary = "Assign employee to flight. Creates new service.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Success",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = EmployeeDTO.class))
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Employee or flight not found.",
+                            content = @Content() // TODO set correct response
+                    )
+            }
+    )
     @PostMapping("{employeeId}/assignEmployee")
     public ResponseEntity<EmployeeDTO> assignStandManager(@PathVariable UUID employeeId, @RequestParam UUID flightId, @RequestParam String message, @RequestParam Integer timeToService) {
         Employee employee;
         try {
             employee = employeeService.getEmployeeById(employeeId);
             Optional<Flight> flightById = flightService.getFlightById(flightId);
-            if (flightById.isEmpty()){
+            if (flightById.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
             Service service = servicesService.createService(employee, employee.getDepartment(), flightById.get(), timeToService, message);
@@ -92,8 +150,9 @@ public class StandManagerControllers {
     }
 
 
-    @ApiResponses(
-            value = {
+    @Operation(
+            summary = "Start first service after assigning all services to the flight.",
+            responses = {
                     @ApiResponse(
                             responseCode = "404",
                             content = @Content(

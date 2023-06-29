@@ -9,9 +9,15 @@ import com.example.application.server.exceptions.FlightNotFoundException;
 import com.example.application.server.services.EmployeeService2;
 import com.example.application.server.services.FlightService2;
 import com.example.application.server.services.RoleService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +27,7 @@ import javax.management.relation.RoleNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "General Manager")
 @RequestMapping("/generalManager")
 @RestController
 @AllArgsConstructor
@@ -31,6 +38,29 @@ public class GeneralManagerControllers {
     private RoleService roleService;
     private FlightService2 flightService;
 
+    @Operation(summary = "Get list of available stand managers.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "List of stand managers with assigned less than 3 flights.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(
+                                            schema = @Schema(implementation = EmployeeDTO.class),
+                                            minItems = 0,
+                                            uniqueItems = true
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "No stand managers in the database or role name in the code and database are different. " +
+                                    "Contact with backend to resolve this problem.",
+                            content = @Content()
+                    )
+            }
+    )
     @GetMapping("/standManagers")
     public ResponseEntity<List<EmployeeDTO>> availableStandManager() {
         List<Employee> standManager;
@@ -43,6 +73,22 @@ public class GeneralManagerControllers {
         return ResponseEntity.ok(standManager.stream().map(employeeService::convertEmployeeToEmployeeDTO).toList());
     }
 
+
+    @Operation(summary = "Assign stand manager to the flight.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Assigned successfully.",
+                            content = @Content()
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Stand manager or flight not found.",
+                            content = @Content()
+                    )
+            }
+    )
     @PostMapping("/{standManagerId}/assigStandManager")
     public void assignStandManager(@PathVariable UUID standManagerId,@RequestParam UUID flightId, @RequestParam String message,@RequestParam Integer timeToService ) {
         try {
@@ -54,6 +100,22 @@ public class GeneralManagerControllers {
         }
     }
 
+    @Operation(summary = "Get flights with given status.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "List of all flights with given status.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(
+                                            schema = @Schema(implementation = FlightDTO.class),
+                                            minItems = 0,
+                                            uniqueItems = true)
+                            )
+                    )
+            }
+    )
     @GetMapping("/flightDeparture")
     @Transactional
     public ResponseEntity<List<FlightDTO>> flightsDeparture(@RequestParam(defaultValue = "departure") String status){

@@ -37,9 +37,9 @@ public class ServiceController {
     private final EmployeesServicesService employeesServicesService;
 
 
-    @Operation(summary = "Get current service assigned to employee")
-    @ApiResponses(
-            value = {
+    @Operation(
+            summary = "Get current service assigned to employee",
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             content = @Content(
@@ -73,8 +73,7 @@ public class ServiceController {
                                             description = "Employee has multiple services assigned in the same time."
                                     )
                             )
-                    ),
-
+                    )
             }
     )
     @GetMapping("/getServiceInfo/{employeeId}")
