@@ -5,19 +5,26 @@ import com.example.application.server.entities.Department;
 import com.example.application.server.entities.Employee;
 import com.example.application.server.entities.Service;
 import com.example.application.server.entities.Flight;
+import com.example.application.server.exceptions.AirplaneNotFound;
+import com.example.application.server.repositories.EmployeeRepository;
+import com.example.application.server.repositories.FlightRepository;
 import com.example.application.server.repositories.ServiceRepository;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @org.springframework.stereotype.Service
 @AllArgsConstructor
 public class ServicesService {
 
-    private ServiceRepository serviceRepository;
-
+    private final ServiceRepository serviceRepository;
+    private final FlightRepository flightRepository; // looping for service
+    private final EmployeeRepository employeeRepository; // looping for service
 
     public Service createService(Employee employee, Department department, Flight flight, Integer timeToService, String message) {
         Service service = Service.builder()
@@ -38,11 +45,25 @@ public class ServicesService {
         return serviceRepository.findAllByFlightId(flightId);
     }
 
-    public static ServiceDTO convertServiceToDto(Service service) {
+
+    public void freeEmployees(final Flight flight, final String departmentName) {
+        serviceRepository.findAllByFlightId(flight.getId()).stream()
+                .filter(service -> service.getDepartment().getName().equals(departmentName))
+                .map(Service::getEmployees)
+                .flatMap(Collection::stream)
+                .forEach(employee -> {
+                    employee.setBusy(false);
+                    employeeRepository.save(employee);
+                });
+    }
+
+    public ServiceDTO convertServiceToDto(Service service) throws AirplaneNotFound {
+        final UUID flightId = service.getFlight().getId();
         return ServiceDTO.builder()
-                .flightId(service.getFlight().getId())
+                .flightId(flightId)
                 .message(service.getMessage())
                 .timeToService(service.getTimeToService())
+                .airplaneId(flightRepository.findById(flightId).orElseThrow(() -> new AirplaneNotFound("")).getId())
                 .build();
     }
 

@@ -8,6 +8,7 @@ import java.util.UUID;
 public record ServiceDTO(
         UUID flightId,
         String message,
-        int timeToService
+        int timeToService,
+        UUID airplaneId
 ) {
 }

@@ -82,10 +82,12 @@ public class FlightService2 {
         return flightRepository.findByStandManager(standManger);
     }
 
-    public void finishFlightService(final Flight flight) throws StatusNotFound {
+    public void finishFlightService(final Flight flight, final String departmentName) throws StatusNotFound {
+        servicesService.freeEmployees(flight, departmentName);
         final Status oldStatus = flight.getStatus();
         final String newStatusName = StatusesEnum.getNextStatusEnumByStatusName(oldStatus.getStatus()).getStatusName();
         final Status status = statusService.getStatusByStatusName(newStatusName);
+
 
         flight.setStatus(status);
         flightRepository.save(flight);

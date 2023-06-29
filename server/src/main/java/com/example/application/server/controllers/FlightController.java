@@ -288,7 +288,7 @@ public class FlightController {
                         "\tFlight status: " + currentStatus.getStatusName());
             }
 
-            flightService.finishFlightService(flight);
+            flightService.finishFlightService(flight, employeeDepartment);
 
         } catch (FlightNotFoundException | StatusNotFound | EmployeeNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

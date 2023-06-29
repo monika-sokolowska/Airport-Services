@@ -4,6 +4,7 @@ import com.example.application.server.DTOs.ServiceDTO;
 import com.example.application.server.entities.Employee;
 import com.example.application.server.entities.Service;
 import com.example.application.server.enums.StatusesEnum;
+import com.example.application.server.exceptions.AirplaneNotFound;
 import com.example.application.server.exceptions.EmployeeNotFoundException;
 import com.example.application.server.exceptions.StatusNotFound;
 import com.example.application.server.services.EmployeeService2;
@@ -34,7 +35,6 @@ import java.util.UUID;
 public class ServiceController {
     private final ServicesService servicesService;
     private final EmployeeService2 employeeService;
-    private final EmployeesServicesService employeesServicesService;
 
 
     @Operation(
@@ -88,13 +88,20 @@ public class ServiceController {
 
         String employeeDepartment = employee.getDepartment().getName();
 
+        // TODO service
         List<Service> servicesList = employee.getServices().stream()
                 .filter(service ->
                         {
                             try {
-                                return StatusesEnum.isDepartmentAssignedToStatus(
-                                        service.getFlight().getStatus().getStatus(),
-                                        employeeDepartment
+//                                return StatusesEnum.isDepartmentAssignedToStatus(
+//                                        service.getFlight().getStatus().getStatus(),
+//                                        employeeDepartment
+//                                );
+                                return (
+                                        StatusesEnum.compareDepartmentToStatus(
+                                                employeeDepartment,
+                                                service.getFlight().getStatus().getStatus()
+                                        ) > -1
                                 );
                             } catch (StatusNotFound e) {
                                 e.printStackTrace();
@@ -116,7 +123,11 @@ public class ServiceController {
 
         final Service service = servicesList.get(0);
 
-        return ResponseEntity.ok(ServicesService.convertServiceToDto(service));
+        try {
+            return ResponseEntity.ok(servicesService.convertServiceToDto(service));
+        } catch (AirplaneNotFound e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
