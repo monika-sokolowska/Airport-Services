@@ -44,8 +44,7 @@ export const postFinished = createAsyncThunk(
   async (data) => {
     const { userId, flightId } = data;
 
-    //TODO flightId to endpoint
-    return postFinishedThunk(`/standManager/${userId}/finished`);
+    return postFinishedThunk(`/standManager/${userId}/finished/${flightId}`);
   }
 );
 

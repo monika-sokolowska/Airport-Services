@@ -9,6 +9,6 @@ public record ServiceDTO(
         UUID flightId,
         String message,
         int timeToService,
-        UUID airplaneId
+        String airplaneNumber
 ) {
 }

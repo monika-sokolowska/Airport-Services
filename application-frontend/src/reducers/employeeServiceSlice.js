@@ -11,6 +11,7 @@ const initialState = {
   isLoading: false,
   assignedFlight: {},
   serviceStart: "",
+  start: "",
 };
 
 export const getAssignedFlight = createAsyncThunk(
@@ -21,9 +22,10 @@ export const getAssignedFlight = createAsyncThunk(
 );
 
 export const getStartService = createAsyncThunk(
-  "employeeService/getAssignedFlight",
-  async (userId) => {
-    return getStartServiceThunk(`/employeeService/${userId}/serviceStart`);
+  "employeeService/getStartService",
+  async (data) => {
+    const { userId, flightId } = data;
+    return getStartServiceThunk(`/flight/serviceStart/${userId}/${flightId}`);
   }
 );
 
@@ -35,12 +37,11 @@ export const postLanded = createAsyncThunk(
 );
 
 export const postFinished = createAsyncThunk(
-  "standManager/postFinished",
+  "employeeService/postFinished",
   async (data) => {
     const { userId, flightId } = data;
 
-    //TODO flightId to endpoint
-    return postFinishedThunk(`/standManager/${userId}/finished/${flightId}`);
+    return postFinishedThunk(`/flight/finished/${userId}/${flightId}`);
   }
 );
 
@@ -53,14 +54,21 @@ const employeeServiceSlice = createSlice({
     builder
       .addCase(getAssignedFlight.pending, (state) => {
         state.isLoading = true;
-        console.log("state", state);
       })
       .addCase(getAssignedFlight.fulfilled, (state, { payload }) => {
-        console.log("payload", payload);
         state.assignedFlight = payload;
-        console.log("state.assignedFlights", state.assignedFlights);
       })
       .addCase(getAssignedFlight.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        toast.error("Something went wrong...");
+      })
+      .addCase(getStartService.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getStartService.fulfilled, (state, { payload }) => {
+        state.serviceStart = payload;
+      })
+      .addCase(getStartService.rejected, (state, { payload }) => {
         state.isLoading = false;
         toast.error("Something went wrong...");
       });

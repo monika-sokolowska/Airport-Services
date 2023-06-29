@@ -80,6 +80,7 @@ const StandManagerForm = () => {
 
       setTime(newTime.toLocaleTimeString());
       setMessage(selectedFlight.message);
+      setDisabledButton(false);
     }
   };
 
@@ -89,6 +90,8 @@ const StandManagerForm = () => {
   };
 
   const finishFlightService = (id) => {
+    setDisabledButton(true);
+    setFlight(initialFlight);
     const data = {
       userId: user.id,
       flightId: id,
@@ -175,7 +178,7 @@ const StandManagerForm = () => {
                       ? "assign-btn-disabled"
                       : "assign-btn-enabled"
                   }
-                  onClick={() => finishFlightService(flight.id)}
+                  onClick={() => finishFlightService(flight.flightId)}
                 />
               </div>
             </div>

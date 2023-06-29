@@ -63,7 +63,7 @@ public class ServicesService {
                 .flightId(flightId)
                 .message(service.getMessage())
                 .timeToService(service.getTimeToService())
-                .airplaneId(flightRepository.findById(flightId).orElseThrow(() -> new AirplaneNotFound("")).getId())
+                .airplaneNumber(flightRepository.findById(flightId).orElseThrow(() -> new AirplaneNotFound("")).getAirplane().getNumber())
                 .build();
     }
 

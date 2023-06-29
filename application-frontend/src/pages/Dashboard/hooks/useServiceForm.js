@@ -28,11 +28,14 @@ export const useServiceForm = () => {
         setFlight(assignedFlight);
         setMessage(assignedFlight.message);
 
-        const newTime = new Date();
-        newTime.setMinutes(newTime.getMinutes() + assignedFlight.timeToService);
+        setTime(assignedFlight.timeToService);
 
-        setTime(newTime.toLocaleTimeString());
-        if (serviceStart != "START") dispatch(getStartService(user.id));
+        const id = user.id;
+        const flightNum = assignedFlight.flightId;
+
+        console.log(assignedFlight.flightId);
+        if (serviceStart !== "START")
+          dispatch(getStartService({ userId: id, flightId: flightNum }));
         else {
           setDisabledButton(false);
           setStart(serviceStart);
@@ -43,7 +46,7 @@ export const useServiceForm = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [dispatch]);
+  }, [assignedFlight, serviceStart, user.id, dispatch]);
 
   const finishService = () => {
     const data = { id: user.id, flightId: flight.flightId };

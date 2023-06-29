@@ -1,33 +1,22 @@
 import "../Dashboard.css";
-import "./NavigateForm.css";
+import "./BoardingArrival.css";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { clearStore } from "../../../reducers/userSlice";
-import { useServiceForm } from "../hooks/useServiceForm";
-import { toast } from "react-toastify";
-import { useState, useEffect } from "react";
-import { postLanded } from "../../../reducers/employeeServiceSlice";
 import {
   getAssignedFlight,
   getStartService,
   postFinished,
 } from "../../../reducers/employeeServiceSlice";
+import { useState, useEffect } from "react";
 
-const initialState = {
-  flightNumber: "",
-};
-
-const NavigateForm = () => {
+const Catering = () => {
   const { user } = useSelector((store) => store.user);
-  const [disabledButtonTakeOff, setDisabledButtonTakeOff] = useState(true);
-  const [disabledButtonLanded, setDisabledButtonLanded] = useState(false);
-  const dispatch = useDispatch();
-  const [values, setValues] = useState(initialState);
-
   const { assignedFlight, serviceStart } = useSelector(
     (store) => store.employeeService
   );
+  const dispatch = useDispatch();
   const [disabledButton, setDisabledButton] = useState(true);
   const [message, setMessage] = useState("");
   const [time, setTime] = useState("");
@@ -67,26 +56,10 @@ const NavigateForm = () => {
     setDisabledButton(true);
   };
 
-  const handleChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-
-    setValues({ ...values, [name]: value });
-  };
-
-  const handleLandedClick = () => {
-    if (values.flightNumber !== "") {
-      dispatch(postLanded(values.flightNumber));
-      setValues({ ...values, flightNumber: "" });
-    } else {
-      toast.error("Flight number expected");
-    }
-  };
-
   return (
     <div className="form-container">
       <div className="form-label">
-        <div className="header">Navigator</div>
+        <div className="header">Catering</div>
         <Link
           to="/login"
           className="log-out"
@@ -128,8 +101,8 @@ const NavigateForm = () => {
               <input
                 disabled={true}
                 value={
-                  flight.flightId
-                    ? `ASSIGNED FLIGHT ${flight.flightId}`
+                  flight.airplaneNumber
+                    ? `ASSIGNED FLIGHT ${flight.airplaneNumber}`
                     : "WAITING"
                 }
                 className="input-disabled"
@@ -139,16 +112,6 @@ const NavigateForm = () => {
               <input disabled={true} value={start} className="input-disabled" />
 
               <div className="button-container">
-                <button
-                  disabled={disabledButtonTakeOff}
-                  className={
-                    disabledButtonTakeOff
-                      ? "assign-btn-disabled"
-                      : "assign-btn-enabled"
-                  }
-                  onClick={() => finishService()}>
-                  Take off
-                </button>
                 <input
                   disabled={disabledButton}
                   type="submit"
@@ -161,29 +124,6 @@ const NavigateForm = () => {
                   onClick={() => finishService()}
                 />
               </div>
-
-              <label>Flight number</label>
-              <input
-                name="flightNumber"
-                value={values.flightNumber}
-                className="input-enabled"
-                onChange={handleChange}
-              />
-
-              <div className="button-container">
-                <button
-                  name="flight-button"
-                  type="button"
-                  disabled={disabledButtonLanded}
-                  className={
-                    disabledButtonLanded
-                      ? "assign-btn-disabled"
-                      : "assign-btn-enabled"
-                  }
-                  onClick={handleLandedClick}>
-                  Landed
-                </button>
-              </div>
             </form>
           </div>
         </div>
@@ -191,4 +131,4 @@ const NavigateForm = () => {
     </div>
   );
 };
-export default NavigateForm;
+export default Catering;

@@ -5,13 +5,57 @@ import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { clearStore } from "../../../reducers/userSlice";
 import { useServiceForm } from "../hooks/useServiceForm";
+import {
+  getAssignedFlight,
+  getStartService,
+  postFinished,
+} from "../../../reducers/employeeServiceSlice";
+import { useState, useEffect } from "react";
 
 const LuggageArrival = () => {
   const { user } = useSelector((store) => store.user);
+  const { assignedFlight, serviceStart } = useSelector(
+    (store) => store.employeeService
+  );
   const dispatch = useDispatch();
+  const [disabledButton, setDisabledButton] = useState(true);
+  const [message, setMessage] = useState("");
+  const [time, setTime] = useState("");
+  const [flight, setFlight] = useState({});
+  const [start, setStart] = useState("WAITING");
 
-  const { flight, start, message, time, disabledButton, finishService } =
-    useServiceForm();
+  useEffect(() => {
+    dispatch(getAssignedFlight(user.id));
+
+    const interval = setInterval(() => {
+      dispatch(getAssignedFlight(user.id));
+      if (assignedFlight) {
+        setFlight(assignedFlight);
+        setMessage(assignedFlight.message);
+
+        setTime(assignedFlight.timeToService);
+
+        const id = user.id;
+        const flightNum = assignedFlight.flightId;
+        if (serviceStart !== "START")
+          dispatch(getStartService({ userId: id, flightId: flightNum }));
+        else {
+          setDisabledButton(false);
+          setStart(serviceStart);
+        }
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  const finishService = () => {
+    const data = { userId: user.id, flightId: flight.flightId };
+    dispatch(postFinished(data));
+    setDisabledButton(true);
+  };
 
   return (
     <div className="form-container">
@@ -58,8 +102,8 @@ const LuggageArrival = () => {
               <input
                 disabled={true}
                 value={
-                  flight.flightId
-                    ? `ASSIGNED FLIGHT ${flight.flightId}`
+                  flight.airplaneNumber
+                    ? `ASSIGNED FLIGHT ${flight.airplaneNumber}`
                     : "WAITING"
                 }
                 className="input-disabled"
