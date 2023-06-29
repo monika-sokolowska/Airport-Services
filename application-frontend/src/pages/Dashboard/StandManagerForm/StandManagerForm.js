@@ -74,7 +74,11 @@ const StandManagerForm = () => {
         (flight) => flight.flightId === id
       );
       setFlight(selectedFlight || initialFlight);
-      setTime(selectedFlight.timeToService);
+
+      const newTime = new Date(selectedFlight.time);
+      newTime.setMinutes(newTime.getMinutes() + selectedFlight.timeToService);
+
+      setTime(newTime.toLocaleTimeString());
       setMessage(selectedFlight.message);
     }
   };
@@ -138,7 +142,7 @@ const StandManagerForm = () => {
                 value={message}
                 cols="10"
                 readOnly></textarea>
-              <h1>Time</h1>
+              <h1>Departure Time</h1>
               <div className="departed-flights">
                 <h1>{time}</h1>
               </div>

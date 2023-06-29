@@ -20,7 +20,10 @@ export const assignStandManager = createAsyncThunk(
 export const getAvailableStandManagers = createAsyncThunk(
   "generalManager/getAvailableStandManagers",
   async () => {
-    return getAvailableStandManagersThunk("/generalManager/standManagers");
+    const result = await getAvailableStandManagersThunk(
+      "/generalManager/standManagers"
+    );
+    return result;
   }
 );
 
