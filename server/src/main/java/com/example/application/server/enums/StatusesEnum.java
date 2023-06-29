@@ -16,7 +16,7 @@ public enum StatusesEnum {
     STATUS_GENERAL_MANAGER("generalManager", 2, DepartmentsEnum.GENERAL_MANAGER),
     STATUS_STAND_MANAGER("standManager", 3, DepartmentsEnum.STAND_MANAGER),
     STATUS_LUGGAGE_ARRIVAL("luggageArrival", 4, DepartmentsEnum.SERVICE_LUGGAGE),
-    STATUS_BOARDING_ARRIVAL("boardingArrival", 5, DepartmentsEnum.SERVICE_BOARDING),
+    STATUS_BOARDING_ARRIVAL("boarding", 5, DepartmentsEnum.SERVICE_BOARDING),
     STATUS_CLEANING("cleaning", 6, DepartmentsEnum.SERVICE_CLEANING),
     STATUS_CATERING("catering", 7, DepartmentsEnum.SERVICE_CATERING),
     STATUS_TANKING("tanking", 8, DepartmentsEnum.SERVICE_TANKING),
