@@ -1,7 +1,7 @@
 import "../../Dashboard.css";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "../StandManagerForm.css";
 import { changeServiceAction } from "../../../../reducers/serviceSlice";
 import {
@@ -30,6 +30,8 @@ const BoardingArrivalForm = ({ flight }) => {
     const name = e.target.name;
     const value = e.target.value;
 
+    console.log("name value", name, value);
+
     setValues({ ...values, [name]: value });
   };
 
@@ -43,10 +45,12 @@ const BoardingArrivalForm = ({ flight }) => {
       if (serviceEmployees) {
         setEmployees(serviceEmployees);
         if (serviceEmployees[0]) {
+          console.log("serviceEmployees[0]", serviceEmployees[0]);
           setValues({ ...values, employee: serviceEmployees[0].id });
         }
       }
     }
+    console.log("flight.flightId", flight.flightId);
     if (flight && flight.flightId) {
       setInputsDisabled(false);
       setDisabledButton(false);

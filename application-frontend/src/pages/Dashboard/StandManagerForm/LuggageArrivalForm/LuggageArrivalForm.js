@@ -35,7 +35,8 @@ const LuggageArrivalForm = ({ flight }) => {
     setValues({ ...values, [name]: value });
   };
 
-  const filterEmployes = useCallback(() => {
+  useEffect(() => {
+    dispatch(getAvailable(user.id));
     if (availableEmployees) {
       const serviceEmployees = availableEmployees.filter(
         (availableEmployee) => availableEmployee.service === "Luggage Service"
@@ -49,17 +50,12 @@ const LuggageArrivalForm = ({ flight }) => {
         }
       }
     }
-  }, [availableEmployees, values]);
-
-  useEffect(() => {
-    dispatch(getAvailable(user.id));
-    filterEmployes();
     console.log("flight.flightId", flight.flightId);
     if (flight && flight.flightId) {
       setInputsDisabled(false);
       setDisabledButton(false);
     }
-  }, [flight, flight.flightId]);
+  }, [flight]);
 
   const onSubmit = (e) => {
     e.preventDefault();

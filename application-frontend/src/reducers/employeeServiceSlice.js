@@ -41,7 +41,11 @@ export const postFinished = createAsyncThunk(
   async (data) => {
     const { userId, flightId } = data;
 
-    return postFinishedThunk(`/flight/finished/${userId}/${flightId}`);
+    const response = await postFinishedThunk(
+      `/flight/finished/${userId}/${flightId}`
+    );
+
+    return response;
   }
 );
 
@@ -57,6 +61,7 @@ const employeeServiceSlice = createSlice({
       })
       .addCase(getAssignedFlight.fulfilled, (state, { payload }) => {
         state.assignedFlight = payload;
+        console.log("state.assignedFlight", state.assignedFlight);
       })
       .addCase(getAssignedFlight.rejected, (state, { payload }) => {
         state.isLoading = false;
@@ -69,6 +74,17 @@ const employeeServiceSlice = createSlice({
         state.serviceStart = payload;
       })
       .addCase(getStartService.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        toast.error("Something went wrong...");
+      })
+      .addCase(postFinished.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(postFinished.fulfilled, (state, { payload }) => {
+        state.serviceStart = "";
+        state.assignedFlight = {};
+      })
+      .addCase(postFinished.rejected, (state, { payload }) => {
         state.isLoading = false;
         toast.error("Something went wrong...");
       });

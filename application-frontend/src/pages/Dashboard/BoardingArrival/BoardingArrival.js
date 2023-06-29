@@ -24,25 +24,26 @@ const BoardingArrival = () => {
   const [start, setStart] = useState("WAITING");
 
   useEffect(() => {
-    dispatch(getAssignedFlight(user.id));
+    if (assignedFlight) {
+      setFlight(assignedFlight);
+      setMessage(assignedFlight.message);
 
+      setTime(assignedFlight.timeToService);
+      const id = user.id;
+      const flightNum = assignedFlight.flightId;
+      if (serviceStart !== "START") {
+        dispatch(getStartService({ userId: id, flightId: flightNum }));
+      } else {
+        setDisabledButton(false);
+        setStart(serviceStart);
+      }
+    }
+  }, [assignedFlight, serviceStart]);
+
+  useEffect(() => {
+    dispatch(getAssignedFlight(user.id));
     const interval = setInterval(() => {
       dispatch(getAssignedFlight(user.id));
-      if (assignedFlight) {
-        setFlight(assignedFlight);
-        setMessage(assignedFlight.message);
-
-        setTime(assignedFlight.timeToService);
-
-        const id = user.id;
-        const flightNum = assignedFlight.flightId;
-        if (serviceStart !== "START")
-          dispatch(getStartService({ userId: id, flightId: flightNum }));
-        else {
-          setDisabledButton(false);
-          setStart(serviceStart);
-        }
-      }
     }, 1000);
 
     return () => {

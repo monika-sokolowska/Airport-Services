@@ -39,7 +39,8 @@ const NavigatorForm = ({ flight }) => {
     dispatch(getAvailable(user.id));
     if (availableEmployees) {
       const serviceEmployees = availableEmployees.filter(
-        (availableEmployee) => availableEmployee.service === "Navigator"
+        (availableEmployee) =>
+          availableEmployee.service === "Navigator (departure)"
       );
 
       if (serviceEmployees) {
