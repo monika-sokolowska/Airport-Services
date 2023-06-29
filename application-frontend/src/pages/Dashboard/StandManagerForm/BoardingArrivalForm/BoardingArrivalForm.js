@@ -56,16 +56,18 @@ const BoardingArrivalForm = ({ flight }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     const { employee, message, time } = values;
+    console.log("submit", employee, message, time);
     const { flightId } = flight;
+
+    const data = {
+      id: user.id,
+      url: `/standManager/${employee}/assignEmployee?flightId=${flightId}&message=${message}&timeToService=${time}`,
+    };
     if (!employee || !message || !time) {
       toast.error("Please fill out all fields");
       return;
     } else {
-      dispatch(
-        assignEmployee(
-          `/standManager/${employee}/assignEmployee?flightId=${flightId}&message=${message}&timeToService=${time}`
-        )
-      );
+      dispatch(assignEmployee(data));
       setDisabledButton(true);
       setInputsDisabled(true);
       setValues(initialState);

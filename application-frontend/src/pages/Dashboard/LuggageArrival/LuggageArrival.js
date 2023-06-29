@@ -43,7 +43,7 @@ const LuggageArrival = () => {
                 value={message}
                 cols="10"
                 readOnly></textarea>
-              <h1>Time</h1>
+              <h1>Finish service time</h1>
               <div className="departed-flights">
                 <h1>{time}</h1>
               </div>

@@ -50,16 +50,22 @@ const GeneralManagerForm = () => {
       dispatch(getDepartedFlights());
     }, 1000);
 
+    if (standManagers[0] !== undefined) {
+      setValues({ ...values, standManager: standManagers[0].id });
+    }
+
     return () => {
       clearInterval(interval);
     };
-  }, [dispatch]);
+  }, [dispatch, standManagers]);
 
   const setFlightDetails = (id) => {
     dispatch(getAvailableStandManagers());
+
     if (flights) {
       const selectedFlight = flights.find((flight) => flight.flightId === id);
       setFlight(selectedFlight || initialFlight);
+
       setDisabledButton(false);
       setInputsDisabled(false);
     }

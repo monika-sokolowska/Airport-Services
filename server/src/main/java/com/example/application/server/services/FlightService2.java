@@ -9,6 +9,7 @@ import com.example.application.server.enums.StatusesEnum;
 import com.example.application.server.exceptions.FlightNotFoundException;
 import com.example.application.server.exceptions.StatusNotFound;
 import com.example.application.server.repositories.FlightRepository;
+import com.example.application.server.repositories.StatusRepository;
 import lombok.AllArgsConstructor;
 
 import java.util.*;
@@ -20,6 +21,8 @@ public class FlightService2 {
     private final FlightRepository flightRepository;
     private final StatusService statusService;
     private final ServicesService servicesService;
+
+    private final StatusRepository statusRepository;
 
     public List<Flight> getFlightsByStatus(String status) {
         return flightRepository.findByStatusStatus(status);
@@ -34,7 +37,8 @@ public class FlightService2 {
                 flight.getId(),
                 flight.getAirplane().getNumber(),
                 flight.getTimeToService(),
-                flight.getMessage()
+                flight.getMessage(),
+                flight.getArrivalTime()
         );
     }
 
@@ -66,12 +70,13 @@ public class FlightService2 {
         updatedFlight.setStandManager(standManager);
         updatedFlight.setTimeToService(timeToService);
         updatedFlight.setMessage(message);
+        updatedFlight.setStatus(statusRepository.findByStatus("standManager").get());
 
-        // TODO po co ta message ?
-        // Czy zmieniamy tu status lotu na standmanager
         flightRepository.save(updatedFlight);
 
     }
+
+
 
     public List<Flight> getFlightsByStandManager(Employee standManger) {
         return flightRepository.findByStandManager(standManger);
